@@ -1,0 +1,38 @@
+-- Lab Reports Table
+CREATE TABLE IF NOT EXISTS lab_reports (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  patient_id INT NOT NULL,
+  doctor_id INT NOT NULL,
+  report TEXT NOT NULL,
+  report_date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (patient_id) REFERENCES users(id),
+  FOREIGN KEY (doctor_id) REFERENCES users(id)
+);
+
+-- Medical History Table
+CREATE TABLE IF NOT EXISTS medical_history (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  patient_id INT NOT NULL,
+  doctor_id INT NOT NULL,
+  history TEXT NOT NULL,
+  history_date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (patient_id) REFERENCES users(id),
+  FOREIGN KEY (doctor_id) REFERENCES users(id)
+);
+
+-- Emergency Cases Table
+CREATE TABLE IF NOT EXISTS emergency_cases (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  patient_id INT NOT NULL,
+  doctor_id INT NOT NULL,
+  case_description TEXT NOT NULL,
+  case_date DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (patient_id) REFERENCES users(id),
+  FOREIGN KEY (doctor_id) REFERENCES users(id)
+); 

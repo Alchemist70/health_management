@@ -1,0 +1,240 @@
+.view-appointments {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.appointments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.appointments-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.book-now-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.book-now-button:hover {
+  background-color: #45a049;
+}
+
+.appointments-section {
+  margin-bottom: 40px;
+}
+
+.appointments-section h3 {
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+.appointments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.appointment-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.appointment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.status {
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status.scheduled {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status.pending {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.status.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status.cancelled,
+.status.rejected {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.status.elapsed {
+  background-color: #eeeeee;
+  color: #757575;
+}
+
+.date {
+  color: #666;
+  font-size: 14px;
+}
+
+.appointment-body {
+  margin-bottom: 60px;
+}
+
+.appointment-body h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.appointment-body p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.appointment-details {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.appointment-details p {
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+.appointment-details strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.appointment-actions {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.action-button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.action-button.complete {
+  background-color: #4caf50;
+  color: white;
+}
+
+.action-button.complete:hover {
+  background-color: #45a049;
+}
+
+.action-button.cancel {
+  background-color: #f44336;
+  color: white;
+}
+
+.action-button.cancel:hover {
+  background-color: #da190b;
+}
+
+/* Style specifically for Approve button */
+.action-button.approve {
+  background-color: #4caf50;
+  color: white;
+}
+
+.action-button.approve:hover {
+  background-color: #45a049;
+}
+
+/* Style specifically for Reject button */
+.action-button.reject {
+  background-color: #f44336;
+  color: white;
+}
+
+.action-button.reject:hover {
+  background-color: #da190b;
+}
+
+.no-appointments {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.empty-state i {
+  font-size: 48px;
+  color: #ccc;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .appointments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .appointments-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .book-now-button {
+    width: 100%;
+  }
+}
