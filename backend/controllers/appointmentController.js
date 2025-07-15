@@ -49,7 +49,12 @@ const getAvailableSlots = async (req, res) => {
       doctor_id: doctorId,
       is_available: true,
     }).sort({ slot_date: 1, slot_time: 1 });
-    res.json(slots);
+    // Ensure each slot has an 'id' field for frontend compatibility
+    const slotsWithId = slots.map((slot) => ({
+      ...slot.toObject(),
+      id: slot._id.toString(),
+    }));
+    res.json(slotsWithId);
   } catch (err) {
     console.error("Error fetching available slots:", err);
     res.status(500).json({ message: "Failed to fetch available slots" });
@@ -160,7 +165,12 @@ const addTimeSlot = async (req, res) => {
       slot_time: slotTime,
       is_available: true,
     });
-    res.status(201).json(timeSlot);
+    // Ensure returned slot has 'id' field
+    const slotWithId = {
+      ...timeSlot.toObject(),
+      id: timeSlot._id.toString(),
+    };
+    res.status(201).json(slotWithId);
   } catch (err) {
     console.error("Error adding time slot:", err);
     res.status(500).json({ message: "Failed to add time slot" });
@@ -171,7 +181,10 @@ const addTimeSlot = async (req, res) => {
 const removeTimeSlot = async (req, res) => {
   try {
     const { slotId } = req.params;
-    await TimeSlot.findByIdAndDelete(slotId);
+    const deleted = await TimeSlot.findByIdAndDelete(slotId);
+    if (!deleted) {
+      return res.status(404).json({ message: "Time slot not found" });
+    }
     res.json({ message: "Time slot removed successfully" });
   } catch (err) {
     console.error("Error removing time slot:", err);
