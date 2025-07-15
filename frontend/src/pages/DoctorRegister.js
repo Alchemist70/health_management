@@ -88,10 +88,15 @@ const DoctorRegister = () => {
         data.append(key, value)
       );
       data.append("credentials", credentialFile);
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       // Submit to a new endpoint for doctor registration (pending approval)
-      const response = await axios.post("/api/doctors/register", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        `${API_BASE}/api/doctors/register`,
+        data,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       if (response.data) {
         setShowSuccessModal(true);
       }
@@ -323,19 +328,82 @@ const DoctorRegister = () => {
             {isSubmitting ? "Submitting..." : "Register as Doctor"}
           </button>
         </form>
-        {showSuccessModal && (
-          <div className="success-modal">
-            <div className="modal-content">
-              <h3>Registration Submitted!</h3>
-              <p>
-                Your registration is pending admin approval. You will be
-                notified once approved.
-              </p>
-              <button onClick={handleGoToLogin}>Go to Login</button>
-            </div>
-          </div>
-        )}
       </div>
+      {showSuccessModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(30,41,59,0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 16,
+              boxShadow: "0 8px 32px rgba(30,58,138,0.12)",
+              padding: "2.5rem 2.5rem 2rem 2.5rem",
+              minWidth: 320,
+              maxWidth: 400,
+              width: "100%",
+              textAlign: "center",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 700,
+                color: "#16a34a",
+                marginBottom: 16,
+              }}
+            >
+              Registration Submitted!
+            </h3>
+            <p style={{ color: "#334155", marginBottom: 24 }}>
+              Your registration is pending admin approval. You will be notified
+              once approved.
+            </p>
+            <button
+              style={{
+                background: "#2563eb",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                padding: "0.75rem 2rem",
+                fontWeight: 600,
+                fontSize: 16,
+                cursor: "pointer",
+                marginRight: 10,
+              }}
+              onClick={handleGoToLogin}
+            >
+              Go to Login
+            </button>
+            <button
+              style={{
+                background: "#e5e7eb",
+                color: "#1e293b",
+                border: "none",
+                borderRadius: 8,
+                padding: "0.75rem 2rem",
+                fontWeight: 600,
+                fontSize: 16,
+                cursor: "pointer",
+              }}
+              onClick={() => setShowSuccessModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
