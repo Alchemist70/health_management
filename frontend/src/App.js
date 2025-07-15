@@ -22,7 +22,7 @@ import EmergencyCases from "./pages/EmergencyCases.js";
 import PatientLabReports from "./pages/PatientLabReports.js";
 import PatientEmergencyCases from "./pages/PatientEmergencyCases.js";
 import DoctorRegister from "./pages/DoctorRegister.js";
-import AdminDoctorApproval from "./pages/AdminDoctorApproval";
+import AdminDoctorApproval from "./pages/AdminDoctorApproval.js";
 import "./styles/App.css";
 
 function App() {
