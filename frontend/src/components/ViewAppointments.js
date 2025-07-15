@@ -199,7 +199,9 @@ const ViewAppointments = () => {
     <div
       key={appointment.id}
       className="appointment-card"
-      onClick={() => navigate(`/appointments/view/${appointment.id}`)}
+      onClick={() =>
+        navigate(`/appointments/view/${appointment.id || appointment._id}`)
+      }
       style={{ cursor: "pointer" }}
     >
       <div className="appointment-header">
