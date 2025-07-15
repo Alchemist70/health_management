@@ -81,13 +81,28 @@ const getAvailableSlots = async (req, res) => {
 // Book an appointment
 const bookAppointment = async (req, res) => {
   try {
-    const { doctorId, appointmentDate, appointmentTime, symptoms, notes } =
-      req.body;
+    // Accept both old and new field names for compatibility
+    const doctorId = req.body.doctorId;
+    const appointmentDate = req.body.appointmentDate || req.body.date;
+    const appointmentTime = req.body.appointmentTime || req.body.time;
+    const symptoms = req.body.symptoms;
+    const notes = req.body.notes;
     const patientId = req.user.id;
+
+    let objectId;
+    try {
+      objectId =
+        typeof doctorId === "string"
+          ? new mongoose.Types.ObjectId(doctorId)
+          : doctorId;
+    } catch (e) {
+      console.error("Invalid doctorId:", doctorId, e);
+      return res.status(400).json({ message: "Invalid doctorId" });
+    }
 
     // Check if slot is available
     const slot = await TimeSlot.findOne({
-      doctor_id: doctorId,
+      doctor_id: objectId,
       slot_date: appointmentDate,
       slot_time: appointmentTime,
       is_available: true,
@@ -100,7 +115,7 @@ const bookAppointment = async (req, res) => {
     // Create appointment
     const appointment = await Appointment.create({
       patient_id: patientId,
-      doctor_id: doctorId,
+      doctor_id: objectId,
       appointment_date: appointmentDate,
       appointment_time: appointmentTime,
       symptoms,

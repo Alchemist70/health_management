@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/ManageSchedule.css";
+import Modal from "../components/Modal";
 
 const ManageSchedule = () => {
   const navigate = useNavigate();
@@ -9,6 +10,8 @@ const ManageSchedule = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [notification, setNotification] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [slotToDelete, setSlotToDelete] = useState(null);
   const token = localStorage.getItem("token");
   const doctorId = localStorage.getItem("userId");
   const userRole = localStorage.getItem("userRole");
@@ -120,11 +123,19 @@ const ManageSchedule = () => {
   };
 
   const handleRemoveSlot = async (slotId) => {
-    try {
-      await axios.delete(`${API_BASE}/api/appointments/remove-slot/${slotId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    setSlotToDelete(slotId);
+    setShowDeleteModal(true);
+  };
 
+  const confirmRemoveSlot = async () => {
+    if (!slotToDelete) return;
+    try {
+      await axios.delete(
+        `${API_BASE}/api/appointments/remove-slot/${slotToDelete}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setNotification({
         type: "success",
         message: "Time slot removed successfully",
@@ -135,7 +146,15 @@ const ManageSchedule = () => {
         type: "error",
         message: error.response?.data?.error || "Failed to remove time slot",
       });
+    } finally {
+      setShowDeleteModal(false);
+      setSlotToDelete(null);
     }
+  };
+
+  const cancelRemoveSlot = () => {
+    setShowDeleteModal(false);
+    setSlotToDelete(null);
   };
 
   // Generate time options (9 AM to 5 PM)
@@ -230,6 +249,24 @@ const ManageSchedule = () => {
           </div>
         </div>
       </div>
+      {showDeleteModal && (
+        <Modal isOpen={showDeleteModal} onClose={cancelRemoveSlot}>
+          <div style={{ textAlign: "center" }}>
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to remove this time slot?</p>
+            <button
+              onClick={confirmRemoveSlot}
+              className="remove-slot-button"
+              style={{ marginRight: 8 }}
+            >
+              Yes, Remove
+            </button>
+            <button onClick={cancelRemoveSlot} className="add-slot-button">
+              Cancel
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
