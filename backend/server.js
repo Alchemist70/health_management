@@ -11,6 +11,7 @@ const prescriptionRoutes = require("./routes/prescriptionRoutes");
 const labReportRoutes = require("./routes/labReportRoutes");
 const medicalHistoryRoutes = require("./routes/medicalHistoryRoutes");
 const emergencyCaseRoutes = require("./routes/emergencyCaseRoutes");
+const doctorRoutes = require("./routes/doctorRoutes");
 
 const app = express();
 
@@ -115,6 +116,8 @@ console.log("Registering /medical-history routes...");
 app.use("/api/medical-history", medicalHistoryRoutes);
 console.log("Registering /emergency-cases routes...");
 app.use("/api/emergency-cases", emergencyCaseRoutes);
+console.log("Registering /doctors routes...");
+app.use("/api/doctors", doctorRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

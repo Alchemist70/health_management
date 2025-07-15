@@ -11,6 +11,10 @@ const Header = () => {
   const location = useLocation();
   const userRole = localStorage.getItem("userRole");
   const userName = localStorage.getItem("userName");
+  // Add admin state
+  const [isAdmin, setIsAdmin] = useState(
+    localStorage.getItem("isAdmin") === "true"
+  );
 
   const formatRole = (role) => {
     return role.charAt(0).toUpperCase() + role.slice(1);
@@ -23,6 +27,13 @@ const Header = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const onStorage = () =>
+      setIsAdmin(localStorage.getItem("isAdmin") === "true");
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
   }, []);
 
   const handleLogout = () => {
@@ -170,6 +181,18 @@ const Header = () => {
             Register
           </Link>
         </div>
+      )}
+      <Link to="/doctor-register" className="nav-link" onClick={closeMenus}>
+        Doctor Registration
+      </Link>
+      {isAdmin && (
+        <Link
+          to="/admin/doctor-approval"
+          className="nav-link"
+          onClick={closeMenus}
+        >
+          Admin Doctor Approval
+        </Link>
       )}
     </header>
   );

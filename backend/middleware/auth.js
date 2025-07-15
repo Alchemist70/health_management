@@ -24,6 +24,17 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
+// Admin authentication using a secret code
+const authenticateAdmin = (req, res, next) => {
+  const adminSecret = process.env.ADMIN_SECRET_CODE || "supersecret";
+  const code = req.headers["x-admin-code"] || req.body.admin_code;
+  if (code !== adminSecret) {
+    return res.status(403).json({ message: "Forbidden: Invalid admin code" });
+  }
+  next();
+};
+
 module.exports = {
   authenticateToken,
+  authenticateAdmin,
 };

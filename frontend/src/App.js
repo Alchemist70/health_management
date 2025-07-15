@@ -22,6 +22,7 @@ import EmergencyCases from "./pages/EmergencyCases.js";
 import PatientLabReports from "./pages/PatientLabReports.js";
 import PatientEmergencyCases from "./pages/PatientEmergencyCases.js";
 import DoctorRegister from "./pages/DoctorRegister.js";
+import AdminDoctorApproval from "./pages/AdminDoctorApproval";
 import "./styles/App.css";
 
 function App() {
@@ -59,6 +60,10 @@ function App() {
             element={<PatientEmergencyCases />}
           />
           <Route path="/doctor-register" element={<DoctorRegister />} />
+          <Route
+            path="/admin/doctor-approval"
+            element={<AdminDoctorApproval />}
+          />
         </Routes>
       </main>
     </div>

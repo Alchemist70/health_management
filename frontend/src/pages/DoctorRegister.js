@@ -15,8 +15,11 @@ const DoctorRegister = () => {
     phone: "",
     address: "",
     national_id: "",
-    role: "doctor",
+    specialization: "",
+    license_number: "",
+    years_experience: "",
   });
+  const [credentialFile, setCredentialFile] = useState(null);
   const [error, setError] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -55,6 +58,10 @@ const DoctorRegister = () => {
     setPasswordsMatch(newConfirmPassword === formData.password);
   };
 
+  const handleFileChange = (e) => {
+    setCredentialFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -70,12 +77,21 @@ const DoctorRegister = () => {
       setIsSubmitting(false);
       return;
     }
+    if (!credentialFile) {
+      setError("Please upload your credentials as a PDF file.");
+      setIsSubmitting(false);
+      return;
+    }
     try {
-      const { confirmPassword, ...submitData } = formData;
-      const response = await axios.post(
-        "http://localhost:5000/auth/register",
-        submitData
+      const data = new FormData();
+      Object.entries(formData).forEach(([key, value]) =>
+        data.append(key, value)
       );
+      data.append("credentials", credentialFile);
+      // Submit to a new endpoint for doctor registration (pending approval)
+      const response = await axios.post("/api/doctors/register", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       if (response.data) {
         setShowSuccessModal(true);
       }
@@ -102,7 +118,7 @@ const DoctorRegister = () => {
       <div className="register-box">
         <h2>Doctor Signup</h2>
         {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="form-group">
             <label htmlFor="name">Full Name</label>
             <input
@@ -180,6 +196,43 @@ const DoctorRegister = () => {
             />
           </div>
           <div className="form-group">
+            <label htmlFor="specialization">Specialization</label>
+            <input
+              type="text"
+              id="specialization"
+              value={formData.specialization}
+              onChange={(e) =>
+                setFormData({ ...formData, specialization: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="license_number">Medical License Number</label>
+            <input
+              type="text"
+              id="license_number"
+              value={formData.license_number}
+              onChange={(e) =>
+                setFormData({ ...formData, license_number: e.target.value })
+              }
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="years_experience">Years of Experience</label>
+            <input
+              type="number"
+              id="years_experience"
+              value={formData.years_experience}
+              onChange={(e) =>
+                setFormData({ ...formData, years_experience: e.target.value })
+              }
+              min="0"
+              required
+            />
+          </div>
+          <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -248,37 +301,41 @@ const DoctorRegister = () => {
             </div>
             {!passwordsMatch && formData.confirmPassword && (
               <div className="password-match-error">
-                <i className="fas fa-times-circle"></i>
-                Passwords do not match
+                <i className="fas fa-times-circle"></i> Passwords do not match
               </div>
             )}
+          </div>
+          <div className="form-group">
+            <label htmlFor="credentials">Upload Credentials (PDF)</label>
+            <input
+              type="file"
+              id="credentials"
+              accept="application/pdf"
+              onChange={handleFileChange}
+              required
+            />
           </div>
           <button
             type="submit"
             className="register-button"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Registering..." : "Register as Doctor"}
+            {isSubmitting ? "Submitting..." : "Register as Doctor"}
           </button>
         </form>
-        <p className="login-link">
-          Already have an account? <a href="/login">Login here</a>
-        </p>
-      </div>
-      {showSuccessModal && (
-        <div className="modal-overlay">
+        {showSuccessModal && (
           <div className="success-modal">
-            <div className="success-icon">
-              <i className="fas fa-check-circle"></i>
+            <div className="modal-content">
+              <h3>Registration Submitted!</h3>
+              <p>
+                Your registration is pending admin approval. You will be
+                notified once approved.
+              </p>
+              <button onClick={handleGoToLogin}>Go to Login</button>
             </div>
-            <h3>Registration Successful!</h3>
-            <p>Your account has been created successfully.</p>
-            <button className="go-to-login-button" onClick={handleGoToLogin}>
-              Go to Sign In
-            </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
