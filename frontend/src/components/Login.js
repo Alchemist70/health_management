@@ -23,7 +23,8 @@ const Login = () => {
       console.log("Full login response data:", response.data);
 
       // Extract user data
-      const { token, role, name, userId, email } = response.data;
+      const { token, user } = response.data;
+      const { role, name, id: userId, email } = user || {};
 
       // Validate the name
       if (!name) {
@@ -47,7 +48,7 @@ const Login = () => {
       localStorage.setItem("userRole", role);
       localStorage.setItem("userName", name);
       localStorage.setItem("userId", userId.toString());
-      localStorage.setItem("userEmail", formData.email); // Store the email used for login
+      localStorage.setItem("userEmail", email); // Store the email used for login
 
       // Force a window storage event for the Header component
       window.dispatchEvent(new Event("storage"));
