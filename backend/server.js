@@ -20,9 +20,13 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? ["https://your-frontend-domain.onrender.com", "http://localhost:3000"]
+        ? [
+            "https://health-management-qyw4.onrender.com",
+            "http://localhost:3000",
+          ]
         : "http://localhost:3000",
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization", "x-admin-code"],
   })
 );
 app.use(express.json());
