@@ -159,27 +159,28 @@ const AdminDoctorApproval = () => {
   // Table and button styles
   const tableContainerStyle = {
     marginTop: 18,
-    overflowX: "auto",
     borderRadius: 12,
     boxShadow: "0 2px 8px rgba(30,58,138,0.07)",
     background: "#f8fafc",
     padding: 0,
-    maxWidth: 800,
+    maxWidth: 1000,
     marginLeft: "auto",
     marginRight: "auto",
+    overflowX: "visible",
   };
   const tableStyle = {
     width: "100%",
     borderCollapse: "separate",
     borderSpacing: 0,
-    minWidth: 700,
+    minWidth: 0,
+    tableLayout: "fixed",
   };
   const thStyle = {
-    padding: "12px 16px",
+    padding: "8px 8px",
     background: "#f1f5f9",
     color: "#1e293b",
     fontWeight: 600,
-    fontSize: 15,
+    fontSize: 14,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     borderBottom: "1px solid #e5e7eb",
@@ -187,15 +188,18 @@ const AdminDoctorApproval = () => {
     whiteSpace: "nowrap",
   };
   const tdStyle = {
-    padding: "12px 16px",
+    padding: "8px 8px",
     color: "#334155",
-    fontSize: 15,
+    fontSize: 14,
     background: "#fff",
     borderBottom: "1px solid #e5e7eb",
     verticalAlign: "middle",
-    whiteSpace: "nowrap",
+    wordBreak: "break-word",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: 120,
   };
-  const actionTdStyle = { ...tdStyle, minWidth: 180 };
+  const actionTdStyle = { ...tdStyle, minWidth: 140, maxWidth: 180 };
   const downloadBtnStyle = {
     ...buttonStyle,
     width: "auto",
