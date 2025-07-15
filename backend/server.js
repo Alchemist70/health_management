@@ -12,6 +12,8 @@ const labReportRoutes = require("./routes/labReportRoutes");
 const medicalHistoryRoutes = require("./routes/medicalHistoryRoutes");
 const emergencyCaseRoutes = require("./routes/emergencyCaseRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 
@@ -45,6 +47,12 @@ app.use((req, res, next) => {
   });
   next();
 });
+
+// Ensure upload directory exists
+const uploadDir = path.join(__dirname, "uploads", "doctor_credentials");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Validate database setup
 const validateDatabase = async () => {
