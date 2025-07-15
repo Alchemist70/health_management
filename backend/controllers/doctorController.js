@@ -47,6 +47,12 @@ exports.registerDoctor = async (req, res) => {
       .status(201)
       .json({ message: "Registration submitted. Pending admin approval." });
   } catch (err) {
+    console.error("Doctor registration error:", {
+      body: req.body,
+      file: req.file,
+      error: err,
+      stack: err.stack,
+    });
     res.status(500).json({ message: err.message });
   }
 };
