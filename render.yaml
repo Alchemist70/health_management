@@ -17,7 +17,7 @@ services:
         sync: false
       - key: JWT_SECRET
         value: your-secret-key
-    healthCheckPath: /api/users
+    healthCheckPath: /
     autoDeploy: true
 
   # Frontend Service

@@ -15,7 +15,15 @@ const emergencyCaseRoutes = require("./routes/emergencyCaseRoutes");
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? ["https://your-frontend-domain.onrender.com", "http://localhost:3000"]
+        : "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -70,6 +78,25 @@ console.log("\n=== Registering Routes ===");
 // Health check endpoint for Render
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", message: "Server is running" });
+});
+
+// Root endpoint
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "MedCare Backend API is running",
+    version: "1.0.0",
+    endpoints: {
+      auth: "/auth/*",
+      appointments: "/api/appointments/*",
+      users: "/api/users/*",
+      patients: "/api/patients/*",
+      prescriptions: "/api/prescriptions/*",
+      labReports: "/api/lab-reports/*",
+      medicalHistory: "/api/medical-history/*",
+      emergencyCases: "/api/emergency-cases/*",
+    },
+  });
 });
 
 console.log("Registering /auth routes...");
