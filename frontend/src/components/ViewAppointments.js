@@ -217,14 +217,7 @@ const ViewAppointments = () => {
             ? `Patient: ${appointment.patient_name}`
             : `Doctor: ${appointment.doctor_name}`}
         </h3>
-        <p className="time">
-          Time:{" "}
-          {new Date(appointment.appointment_date).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          })}
-        </p>
+        <p className="time">Time: {appointment.appointment_time}</p>
         <div className="appointment-details">
           <p className="symptoms">
             <strong>Symptoms:</strong>{" "}
