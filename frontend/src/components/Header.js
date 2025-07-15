@@ -182,9 +182,12 @@ const Header = () => {
           </Link>
         </div>
       )}
-      <Link to="/doctor-register" className="nav-link" onClick={closeMenus}>
-        Doctor Registration
-      </Link>
+      {/* Only show Doctor Registration if not logged in */}
+      {!userRole && (
+        <Link to="/doctor-register" className="nav-link" onClick={closeMenus}>
+          Doctor Registration
+        </Link>
+      )}
       {isAdmin && (
         <Link
           to="/admin/doctor-approval"

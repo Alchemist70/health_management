@@ -21,6 +21,7 @@ const BookAppointment = () => {
   const [patientEmail, setPatientEmail] = useState("");
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+  const API_BASE = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     if (!token) {
@@ -43,7 +44,7 @@ const BookAppointment = () => {
       console.log("Fetching patient email for userId:", userId);
       console.log("Using token:", token);
 
-      const response = await axios.get(`http://localhost:5000/auth/profile`, {
+      const response = await axios.get(`${API_BASE}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -84,12 +85,9 @@ const BookAppointment = () => {
   const fetchDoctors = async () => {
     try {
       console.log("Fetching doctors with token:", token);
-      const response = await axios.get(
-        "http://localhost:5000/api/appointments/doctors",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await axios.get(`${API_BASE}/api/appointments/doctors`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log("Doctors response:", response.data);
       setDoctors(response.data);
     } catch (err) {
@@ -117,7 +115,7 @@ const BookAppointment = () => {
     try {
       console.log("Fetching slots for doctor:", doctor.id);
       const response = await axios.get(
-        `http://localhost:5000/api/appointments/available-slots/${doctor.id}`,
+        `${API_BASE}/api/appointments/available-slots/${doctor.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -207,7 +205,7 @@ const BookAppointment = () => {
       console.log("Attempting to book appointment with data:", bookingData);
 
       const response = await axios.post(
-        "http://localhost:5000/api/appointments/book",
+        `${API_BASE}/api/appointments/book`,
         bookingData,
         {
           headers: {

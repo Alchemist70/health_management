@@ -4,10 +4,11 @@ import axios from "axios";
 const AppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
   const token = localStorage.getItem("token"); // ✅ Fix: Declare token here
+  const API_BASE = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/appointments", {
+      .get(`${API_BASE}/appointments`, {
         headers: { Authorization: `Bearer ${token}` }, // ✅ Ensure token is included
       })
       .then((res) => setAppointments(res.data))
@@ -17,7 +18,7 @@ const AppointmentsList = () => {
   const handleUpdate = async (id, status) => {
     try {
       await axios.put(
-        "http://localhost:5000/update-status",
+        `${API_BASE}/update-status`,
         { id, status },
         {
           headers: { Authorization: `Bearer ${token}` }, // ✅ Fix: Use backticks for `Bearer ${token}`

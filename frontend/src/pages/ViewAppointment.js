@@ -13,6 +13,7 @@ const ViewAppointment = () => {
   const [notification, setNotification] = useState(null);
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("userRole");
+  const API_BASE = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     if (!token) {
@@ -30,7 +31,7 @@ const ViewAppointment = () => {
       console.log("User Role:", userRole);
 
       const response = await axios.get(
-        `http://localhost:5000/api/appointments/view/${appointmentId}`,
+        `${API_BASE}/api/appointments/view/${appointmentId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +75,7 @@ const ViewAppointment = () => {
   const handleStatusUpdate = async (newStatus) => {
     try {
       await axios.put(
-        "http://localhost:5000/api/appointments/update-status",
+        `${API_BASE}/api/appointments/update-status`,
         { id: appointmentId, status: newStatus },
         {
           headers: {
@@ -99,15 +100,12 @@ const ViewAppointment = () => {
     }
 
     try {
-      await axios.delete(
-        `http://localhost:5000/api/appointments/${appointmentId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.delete(`${API_BASE}/api/appointments/${appointmentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       setNotification({
         message: "Appointment deleted successfully",

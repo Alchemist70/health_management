@@ -22,7 +22,8 @@ const BookAppointment = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/doctors");
+      const API_BASE = process.env.REACT_APP_API_URL || "";
+      const response = await axios.get(`${API_BASE}/doctors`);
       setDoctors(response.data);
     } catch (error) {
       setError("Failed to fetch doctors");
@@ -33,8 +34,9 @@ const BookAppointment = () => {
     if (!selectedDoctor || !selectedDate) return;
 
     try {
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       const response = await axios.get(
-        `http://localhost:5000/appointments/available-slots?doctorId=${selectedDoctor}&date=${selectedDate}`
+        `${API_BASE}/appointments/available-slots?doctorId=${selectedDoctor}&date=${selectedDate}`
       );
       setAvailableSlots(response.data);
     } catch (error) {
@@ -55,8 +57,9 @@ const BookAppointment = () => {
     setSuccessMessage("");
 
     try {
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       const response = await axios.post(
-        "http://localhost:5000/appointments/book",
+        `${API_BASE}/appointments/book`,
         {
           doctorId: selectedDoctor,
           date: selectedDate,

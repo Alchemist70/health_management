@@ -21,15 +21,13 @@ const DoctorDashboard = () => {
         return;
       }
 
-      const response = await axios.get(
-        `http://localhost:5000/api/appointments/doctor`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const API_BASE = process.env.REACT_APP_API_URL || "";
+      const response = await axios.get(`${API_BASE}/api/appointments/doctor`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       const today = new Date();
       const todayStr = today.toISOString().split("T")[0];

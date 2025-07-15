@@ -25,7 +25,8 @@ const WritePrescription = () => {
   const fetchPatients = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:5000/api/patients", {
+      const API_BASE = process.env.REACT_APP_API_URL || "";
+      const response = await axios.get(`${API_BASE}/api/patients`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPatients(response.data);
@@ -52,6 +53,7 @@ const WritePrescription = () => {
 
     try {
       const token = localStorage.getItem("token");
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       const prescriptionData = {
         patient_id: selectedPatient,
         symptoms,
@@ -63,7 +65,7 @@ const WritePrescription = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/prescriptions",
+        `${API_BASE}/api/prescriptions`,
         prescriptionData,
         {
           headers: { Authorization: `Bearer ${token}` },

@@ -11,7 +11,8 @@ const ActivePatients = () => {
     const fetchPatients = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/patients", {
+        const API_BASE = process.env.REACT_APP_API_URL || "";
+        const response = await axios.get(`${API_BASE}/api/patients`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPatients(response.data);

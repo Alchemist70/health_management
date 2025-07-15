@@ -58,8 +58,9 @@ const ViewAppointments = () => {
       const endpoint = userRole === "doctor" ? "doctor" : "patient";
       console.log("Using endpoint:", `/api/appointments/${endpoint}`);
 
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       const response = await axios.get(
-        `http://localhost:5000/api/appointments/${endpoint}`,
+        `${API_BASE}/api/appointments/${endpoint}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -131,8 +132,9 @@ const ViewAppointments = () => {
       setIsLoading(true);
       setNotification(null);
 
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       const response = await axios.put(
-        "http://localhost:5000/api/appointments/update-status",
+        `${API_BASE}/api/appointments/update-status`,
         {
           id: appointmentId,
           status: newStatus,
@@ -169,8 +171,9 @@ const ViewAppointments = () => {
 
   const handleCancelAppointment = async (appointmentId) => {
     try {
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       await axios.put(
-        "http://localhost:5000/api/appointments/cancel",
+        `${API_BASE}/api/appointments/cancel`,
         { id: appointmentId },
         {
           headers: {

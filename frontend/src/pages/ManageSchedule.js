@@ -12,6 +12,7 @@ const ManageSchedule = () => {
   const token = localStorage.getItem("token");
   const doctorId = localStorage.getItem("userId");
   const userRole = localStorage.getItem("userRole");
+  const API_BASE = process.env.REACT_APP_API_URL || "";
 
   useEffect(() => {
     // Check if user is logged in and is a doctor
@@ -46,7 +47,7 @@ const ManageSchedule = () => {
   const fetchTimeSlots = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/appointments/available-slots/${doctorId}`,
+        `${API_BASE}/api/appointments/available-slots/${doctorId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -85,7 +86,7 @@ const ManageSchedule = () => {
       });
 
       const response = await axios.post(
-        "http://localhost:5000/api/appointments/add-slot",
+        `${API_BASE}/api/appointments/add-slot`,
         requestData,
         {
           headers: {
@@ -119,12 +120,9 @@ const ManageSchedule = () => {
 
   const handleRemoveSlot = async (slotId) => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/appointments/remove-slot/${slotId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.delete(`${API_BASE}/api/appointments/remove-slot/${slotId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       setNotification({
         type: "success",

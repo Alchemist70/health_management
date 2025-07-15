@@ -26,8 +26,9 @@ const ViewPrescriptions = () => {
         return;
       }
 
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       const response = await axios.get(
-        "http://localhost:5000/api/prescriptions/patient",
+        `${API_BASE}/api/prescriptions/patient`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
