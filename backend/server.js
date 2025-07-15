@@ -125,6 +125,18 @@ app.use("/api/doctors", doctorRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  if (err && err.code === "LIMIT_FILE_SIZE") {
+    return res
+      .status(400)
+      .json({ message: "File too large. Max size is 5MB." });
+  }
+  if (
+    err &&
+    err.message &&
+    err.message.includes("Only PDF files are allowed")
+  ) {
+    return res.status(400).json({ message: "Only PDF files are allowed." });
+  }
   console.error("\n=== Error Handler ===");
   console.error("Error details:", err);
   res.status(500).json({ error: "Internal server error" });

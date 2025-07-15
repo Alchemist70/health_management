@@ -101,7 +101,12 @@ const DoctorRegister = () => {
         setShowSuccessModal(true);
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
+      // Show user-friendly error for file size/type
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Registration failed");
+      }
       setIsSubmitting(false);
     }
   };
