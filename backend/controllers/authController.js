@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const DoctorRegistration = require("../models/doctorRegistrationModel");
 
 // Register user
 const register = async (req, res) => {
@@ -53,35 +54,50 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
+    // Check if user exists in User collection
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (user) {
+      // Check password
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Invalid credentials" });
+      }
+      // Create token
+      const token = jwt.sign(
+        { userId: user._id, role: user.role, name: user.name },
+        "your-secret-key",
+        { expiresIn: "24h" }
+      );
+      return res.json({
+        message: "Login successful",
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
     }
 
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+    // If not found in User, check DoctorRegistration
+    const doctorReg = await DoctorRegistration.findOne({ email });
+    if (doctorReg) {
+      if (doctorReg.status === "pending") {
+        return res
+          .status(403)
+          .json({ message: "Your registration is pending admin approval." });
+      } else if (doctorReg.status === "rejected") {
+        return res
+          .status(403)
+          .json({
+            message: "Your registration was rejected. Please contact support.",
+          });
+      }
     }
 
-    // Create token
-    const token = jwt.sign(
-      { userId: user._id, role: user.role, name: user.name },
-      "your-secret-key",
-      { expiresIn: "24h" }
-    );
-
-    res.json({
-      message: "Login successful",
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
+    // Not found in either collection
+    return res.status(400).json({ message: "Invalid credentials" });
   } catch (err) {
     console.error("Error logging in:", err);
     res.status(500).json({ message: "Failed to login" });
