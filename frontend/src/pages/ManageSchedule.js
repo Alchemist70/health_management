@@ -74,8 +74,9 @@ const ManageSchedule = () => {
 
     try {
       const requestData = {
-        date: selectedDate,
-        time: selectedTime,
+        doctorId,
+        slotDate: selectedDate,
+        slotTime: selectedTime,
       };
 
       console.log("Token being sent:", token);

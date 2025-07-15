@@ -14,6 +14,7 @@ const emergencyCaseRoutes = require("./routes/emergencyCaseRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
 const fs = require("fs");
 const path = require("path");
+const appointmentController = require("./controllers/appointmentController");
 
 const app = express();
 
@@ -198,6 +199,22 @@ const initializeApp = async () => {
 
     // Validate database
     await validateDatabase();
+
+    // Generate default slots for all doctors for today and next 7 days
+    const doctors = await User.find({ role: "doctor" });
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (const doctor of doctors) {
+      for (let i = 0; i < 7; i++) {
+        const slotDate = new Date(today);
+        slotDate.setDate(today.getDate() + i);
+        await appointmentController.generateDefaultSlotsForDoctor(
+          doctor._id,
+          slotDate
+        );
+      }
+    }
+    console.log("Default slots generated for all doctors for the next 7 days");
 
     console.log("Database initialization complete");
   } catch (err) {

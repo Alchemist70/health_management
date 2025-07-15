@@ -179,6 +179,41 @@ const removeTimeSlot = async (req, res) => {
   }
 };
 
+// Utility: Generate default slots for a doctor for a given date
+const generateDefaultSlotsForDoctor = async (doctorId, date) => {
+  // date: JS Date object (midnight)
+  const slots = [];
+  for (let hour = 9; hour < 17; hour++) {
+    for (let min = 0; min < 60; min += 30) {
+      const slotTime = `${hour.toString().padStart(2, "0")}:${
+        min === 0 ? "00" : "30"
+      }`;
+      slots.push({
+        doctor_id: doctorId,
+        slot_date: date,
+        slot_time: slotTime,
+        is_available: true,
+      });
+    }
+  }
+  // Only insert slots that don't already exist
+  for (const slot of slots) {
+    try {
+      await TimeSlot.updateOne(
+        {
+          doctor_id: slot.doctor_id,
+          slot_date: slot.slot_date,
+          slot_time: slot.slot_time,
+        },
+        { $setOnInsert: slot },
+        { upsert: true }
+      );
+    } catch (err) {
+      // Ignore duplicate errors
+    }
+  }
+};
+
 module.exports = {
   getDoctors,
   getPatientAppointments,
@@ -190,4 +225,5 @@ module.exports = {
   getAppointmentById,
   addTimeSlot,
   removeTimeSlot,
+  generateDefaultSlotsForDoctor, // Exported for server use
 };

@@ -144,7 +144,9 @@ const BookAppointment = () => {
 
         if (validSlots.length === 0) {
           console.log("No valid slots found after filtering");
-          setError("No available time slots found for this doctor");
+          setError(
+            "No available time slots for this doctor. Please try again later."
+          );
           setTimeSlots([]);
         } else {
           console.log("Setting time slots:", validSlots);
