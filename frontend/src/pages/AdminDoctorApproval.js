@@ -156,6 +156,73 @@ const AdminDoctorApproval = () => {
     marginTop: 0,
   };
 
+  // Table and button styles
+  const tableContainerStyle = {
+    marginTop: 18,
+    overflowX: "auto",
+    borderRadius: 12,
+    boxShadow: "0 2px 8px rgba(30,58,138,0.07)",
+    background: "#f8fafc",
+    padding: 0,
+    maxWidth: 800,
+    marginLeft: "auto",
+    marginRight: "auto",
+  };
+  const tableStyle = {
+    width: "100%",
+    borderCollapse: "separate",
+    borderSpacing: 0,
+    minWidth: 700,
+  };
+  const thStyle = {
+    padding: "12px 16px",
+    background: "#f1f5f9",
+    color: "#1e293b",
+    fontWeight: 600,
+    fontSize: 15,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    borderBottom: "1px solid #e5e7eb",
+    textAlign: "left",
+    whiteSpace: "nowrap",
+  };
+  const tdStyle = {
+    padding: "12px 16px",
+    color: "#334155",
+    fontSize: 15,
+    background: "#fff",
+    borderBottom: "1px solid #e5e7eb",
+    verticalAlign: "middle",
+    whiteSpace: "nowrap",
+  };
+  const actionTdStyle = { ...tdStyle, minWidth: 180 };
+  const downloadBtnStyle = {
+    ...buttonStyle,
+    width: "auto",
+    background: "#2563eb",
+    fontSize: 14,
+    padding: "0.4rem 1rem",
+    marginRight: 8,
+    marginBottom: 0,
+  };
+  const approveBtnStyle = {
+    ...buttonStyle,
+    width: "auto",
+    background: "#16a34a",
+    fontSize: 14,
+    padding: "0.4rem 1rem",
+    marginRight: 6,
+    marginBottom: 0,
+  };
+  const rejectBtnStyle = {
+    ...buttonStyle,
+    width: "auto",
+    background: "#dc2626",
+    fontSize: 14,
+    padding: "0.4rem 1rem",
+    marginBottom: 0,
+  };
+
   if (!isAuthenticated) {
     return (
       <div style={pageStyle}>
@@ -212,76 +279,58 @@ const AdminDoctorApproval = () => {
           <div>No pending registrations.</div>
         )}
         {pendingDoctors.length > 0 && (
-          <table
-            className="doctor-table"
-            style={{ width: "100%", marginTop: 18, borderCollapse: "collapse" }}
-          >
-            <thead>
-              <tr style={{ background: "#f1f5f9" }}>
-                <th style={{ padding: 10, borderRadius: 6 }}>Name</th>
-                <th style={{ padding: 10, borderRadius: 6 }}>Email</th>
-                <th style={{ padding: 10, borderRadius: 6 }}>Specialization</th>
-                <th style={{ padding: 10, borderRadius: 6 }}>License #</th>
-                <th style={{ padding: 10, borderRadius: 6 }}>Experience</th>
-                <th style={{ padding: 10, borderRadius: 6 }}>Credentials</th>
-                <th style={{ padding: 10, borderRadius: 6 }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingDoctors.map((doc) => (
-                <tr key={doc._id} style={{ borderBottom: "1px solid #e5e7eb" }}>
-                  <td style={{ padding: 10 }}>{doc.name}</td>
-                  <td style={{ padding: 10 }}>{doc.email}</td>
-                  <td style={{ padding: 10 }}>{doc.specialization}</td>
-                  <td style={{ padding: 10 }}>{doc.license_number}</td>
-                  <td style={{ padding: 10 }}>{doc.years_experience}</td>
-                  <td style={{ padding: 10 }}>
-                    <button
-                      style={{
-                        ...buttonStyle,
-                        width: "auto",
-                        background: "#1e40af",
-                        fontSize: 14,
-                        padding: "0.4rem 1rem",
-                      }}
-                      onClick={() => handleDownload(doc._id)}
-                    >
-                      Download PDF
-                    </button>
-                  </td>
-                  <td style={{ padding: 10 }}>
-                    <button
-                      style={{
-                        ...buttonStyle,
-                        width: "auto",
-                        background: "#16a34a",
-                        fontSize: 14,
-                        padding: "0.4rem 1rem",
-                        marginRight: 6,
-                      }}
-                      onClick={() => handleApprove(doc._id)}
-                      disabled={loading}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      style={{
-                        ...buttonStyle,
-                        width: "auto",
-                        background: "#dc2626",
-                        fontSize: 14,
-                        padding: "0.4rem 1rem",
-                      }}
-                      onClick={() => handleReject(doc._id)}
-                      disabled={loading}
-                    >
-                      Reject
-                    </button>
-                  </td>
+          <div style={tableContainerStyle}>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={{ ...thStyle, borderTopLeftRadius: 8 }}>Name</th>
+                  <th style={thStyle}>Email</th>
+                  <th style={thStyle}>Specialization</th>
+                  <th style={thStyle}>License #</th>
+                  <th style={thStyle}>Experience</th>
+                  <th style={thStyle}>Credentials</th>
+                  <th style={{ ...thStyle, borderTopRightRadius: 8 }}>
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pendingDoctors.map((doc) => (
+                  <tr key={doc._id}>
+                    <td style={tdStyle}>{doc.name}</td>
+                    <td style={tdStyle}>{doc.email}</td>
+                    <td style={tdStyle}>{doc.specialization}</td>
+                    <td style={tdStyle}>{doc.license_number}</td>
+                    <td style={tdStyle}>{doc.years_experience}</td>
+                    <td style={tdStyle}>
+                      <button
+                        style={downloadBtnStyle}
+                        onClick={() => handleDownload(doc._id)}
+                      >
+                        Download PDF
+                      </button>
+                    </td>
+                    <td style={actionTdStyle}>
+                      <button
+                        style={approveBtnStyle}
+                        onClick={() => handleApprove(doc._id)}
+                        disabled={loading}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        style={rejectBtnStyle}
+                        onClick={() => handleReject(doc._id)}
+                        disabled={loading}
+                      >
+                        Reject
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
