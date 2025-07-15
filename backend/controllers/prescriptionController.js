@@ -1,4 +1,5 @@
-const db = require("../config/database");
+const User = require("../models/userModel");
+const Prescription = require("../models/prescriptionModel");
 const { sendEmail } = require("../services/emailService");
 
 const createPrescription = async (req, res) => {
@@ -18,51 +19,32 @@ const createPrescription = async (req, res) => {
 
   try {
     // Get patient and doctor details
-    const [users] = await db.promise().query(
-      `SELECT 
-        p.email as patient_email, 
-        p.name as patient_name,
-        d.name as doctor_name
-       FROM users p
-       JOIN users d ON d.id = ?
-       WHERE p.id = ?`,
-      [doctor_id, patient_id]
-    );
-
-    if (!users.length) {
+    const patient = await User.findById(patient_id);
+    const doctor = await User.findById(doctor_id);
+    if (!patient || !doctor) {
       throw new Error("Patient or doctor not found");
     }
 
-    const { patient_email, patient_name, doctor_name } = users[0];
+    // Ensure medications is an array
+    const medicationsArr = Array.isArray(medications) ? medications : [];
 
-    // Ensure medications is properly stringified
-    const medicationsJson = Array.isArray(medications)
-      ? JSON.stringify(medications)
-      : JSON.stringify([]);
+    // Create prescription
+    const prescription = await Prescription.create({
+      patient_id,
+      doctor_id,
+      symptoms,
+      diagnosis,
+      medications: medicationsArr,
+      instructions,
+    });
 
-    console.log("Stringified medications:", medicationsJson);
-
-    const [result] = await db.promise().query(
-      `INSERT INTO prescriptions 
-       (patient_id, doctor_id, symptoms, diagnosis, medications, instructions, created_at) 
-       VALUES (?, ?, ?, ?, ?, ?, NOW())`,
-      [
-        patient_id,
-        doctor_id,
-        symptoms,
-        diagnosis,
-        medicationsJson,
-        instructions,
-      ]
-    );
-
-    console.log("Prescription created successfully:", result);
+    console.log("Prescription created successfully:", prescription);
 
     // Send email notification
     try {
-      await sendEmail(patient_email, "prescriptionAdded", [
-        patient_name,
-        doctor_name,
+      await sendEmail(patient.email, "prescriptionAdded", [
+        patient.name,
+        doctor.name,
         new Date().toLocaleDateString(),
       ]);
       console.log("Prescription notification email sent successfully");
@@ -76,8 +58,8 @@ const createPrescription = async (req, res) => {
 
     res.status(201).json({
       message: "Prescription created successfully",
-      prescription_id: result.insertId,
-      patient_email: patient_email,
+      prescription_id: prescription._id,
+      patient_email: patient.email,
     });
   } catch (err) {
     console.error("Error creating prescription:", err);
@@ -97,43 +79,16 @@ const getPatientPrescriptions = async (req, res) => {
   console.log("Fetching prescriptions for patient_id:", patient_id);
 
   try {
-    const [prescriptions] = await db.promise().query(
-      `SELECT p.*, u.name as doctor_name 
-       FROM prescriptions p 
-       JOIN users u ON p.doctor_id = u.id 
-       WHERE p.patient_id = ? 
-       ORDER BY p.created_at DESC`,
-      [patient_id]
-    );
+    const prescriptions = await Prescription.find({ patient_id })
+      .populate("doctor_id", "name")
+      .sort({ created_at: -1 });
 
     console.log("Raw prescriptions from DB:", prescriptions);
 
-    // Parse medications JSON for each prescription
+    // Parse medications for each prescription (should already be array)
     const processedPrescriptions = prescriptions.map((prescription) => {
-      const processed = { ...prescription };
-      try {
-        // Check if medications is already an object
-        if (
-          typeof prescription.medications === "object" &&
-          prescription.medications !== null
-        ) {
-          processed.medications = prescription.medications;
-        } else if (typeof prescription.medications === "string") {
-          // Try to parse if it's a string
-          processed.medications = JSON.parse(prescription.medications);
-        } else {
-          // Default to empty array if neither
-          processed.medications = [];
-        }
-      } catch (err) {
-        console.error(
-          `Error processing medications for prescription ${prescription.id}:`,
-          err.message,
-          "\nRaw medications value:",
-          prescription.medications
-        );
-        processed.medications = [];
-      }
+      const processed = prescription.toObject();
+      processed.doctor_name = prescription.doctor_id?.name || "";
       return processed;
     });
 

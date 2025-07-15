@@ -1,0 +1,193 @@
+const User = require("../models/userModel");
+const Appointment = require("../models/appointmentModel");
+const TimeSlot = require("../models/timeSlotModel");
+
+// Get all doctors
+const getDoctors = async (req, res) => {
+  try {
+    const doctors = await User.find({ role: "doctor" }, "id name email");
+    res.json(doctors);
+  } catch (err) {
+    console.error("Error fetching doctors:", err);
+    res.status(500).json({ message: "Failed to fetch doctors" });
+  }
+};
+
+// Get patient's appointments
+const getPatientAppointments = async (req, res) => {
+  try {
+    const patientId = req.user.id;
+    const appointments = await Appointment.find({ patient_id: patientId })
+      .populate("doctor_id", "name email")
+      .sort({ appointment_date: -1 });
+    res.json(appointments);
+  } catch (err) {
+    console.error("Error fetching patient appointments:", err);
+    res.status(500).json({ message: "Failed to fetch appointments" });
+  }
+};
+
+// Get doctor's appointments
+const getDoctorAppointments = async (req, res) => {
+  try {
+    const doctorId = req.user.id;
+    const appointments = await Appointment.find({ doctor_id: doctorId })
+      .populate("patient_id", "name email")
+      .sort({ appointment_date: -1 });
+    res.json(appointments);
+  } catch (err) {
+    console.error("Error fetching doctor appointments:", err);
+    res.status(500).json({ message: "Failed to fetch appointments" });
+  }
+};
+
+// Get available slots for a doctor
+const getAvailableSlots = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+    const slots = await TimeSlot.find({
+      doctor_id: doctorId,
+      is_available: true,
+    }).sort({ slot_date: 1, slot_time: 1 });
+    res.json(slots);
+  } catch (err) {
+    console.error("Error fetching available slots:", err);
+    res.status(500).json({ message: "Failed to fetch available slots" });
+  }
+};
+
+// Book an appointment
+const bookAppointment = async (req, res) => {
+  try {
+    const { doctorId, appointmentDate, appointmentTime, symptoms, notes } =
+      req.body;
+    const patientId = req.user.id;
+
+    // Check if slot is available
+    const slot = await TimeSlot.findOne({
+      doctor_id: doctorId,
+      slot_date: appointmentDate,
+      slot_time: appointmentTime,
+      is_available: true,
+    });
+
+    if (!slot) {
+      return res.status(400).json({ message: "Time slot not available" });
+    }
+
+    // Create appointment
+    const appointment = await Appointment.create({
+      patient_id: patientId,
+      doctor_id: doctorId,
+      appointment_date: appointmentDate,
+      appointment_time: appointmentTime,
+      symptoms,
+      notes,
+      status: "scheduled",
+    });
+
+    // Mark slot as unavailable
+    await TimeSlot.findByIdAndUpdate(slot._id, { is_available: false });
+
+    res.status(201).json({
+      message: "Appointment booked successfully",
+      appointment,
+    });
+  } catch (err) {
+    console.error("Error booking appointment:", err);
+    res.status(500).json({ message: "Failed to book appointment" });
+  }
+};
+
+// Update appointment status
+const updateStatus = async (req, res) => {
+  try {
+    const { appointmentId, status } = req.body;
+    const appointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { status },
+      { new: true }
+    );
+    res.json(appointment);
+  } catch (err) {
+    console.error("Error updating appointment status:", err);
+    res.status(500).json({ message: "Failed to update appointment status" });
+  }
+};
+
+// Add prescription to appointment
+const addPrescription = async (req, res) => {
+  try {
+    const { appointmentId, prescription } = req.body;
+    const appointment = await Appointment.findByIdAndUpdate(
+      appointmentId,
+      { prescription },
+      { new: true }
+    );
+    res.json(appointment);
+  } catch (err) {
+    console.error("Error adding prescription:", err);
+    res.status(500).json({ message: "Failed to add prescription" });
+  }
+};
+
+// Get single appointment by ID
+const getAppointmentById = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const appointment = await Appointment.findById(appointmentId)
+      .populate("patient_id", "name email")
+      .populate("doctor_id", "name email");
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    res.json(appointment);
+  } catch (err) {
+    console.error("Error fetching appointment:", err);
+    res.status(500).json({ message: "Failed to fetch appointment" });
+  }
+};
+
+// Add a new time slot
+const addTimeSlot = async (req, res) => {
+  try {
+    const { doctorId, slotDate, slotTime } = req.body;
+    const timeSlot = await TimeSlot.create({
+      doctor_id: doctorId,
+      slot_date: slotDate,
+      slot_time: slotTime,
+      is_available: true,
+    });
+    res.status(201).json(timeSlot);
+  } catch (err) {
+    console.error("Error adding time slot:", err);
+    res.status(500).json({ message: "Failed to add time slot" });
+  }
+};
+
+// Remove a time slot
+const removeTimeSlot = async (req, res) => {
+  try {
+    const { slotId } = req.params;
+    await TimeSlot.findByIdAndDelete(slotId);
+    res.json({ message: "Time slot removed successfully" });
+  } catch (err) {
+    console.error("Error removing time slot:", err);
+    res.status(500).json({ message: "Failed to remove time slot" });
+  }
+};
+
+module.exports = {
+  getDoctors,
+  getPatientAppointments,
+  getDoctorAppointments,
+  getAvailableSlots,
+  bookAppointment,
+  updateStatus,
+  addPrescription,
+  getAppointmentById,
+  addTimeSlot,
+  removeTimeSlot,
+};

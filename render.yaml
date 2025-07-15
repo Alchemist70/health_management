@@ -1,0 +1,33 @@
+services:
+  # Backend API Service
+  - type: web
+    name: medcare-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        value: your-secret-key
+    healthCheckPath: /api/users
+    autoDeploy: true
+
+  # Frontend Service
+  - type: web
+    name: medcare-frontend
+    env: static
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://medcare-backend.onrender.com
+    autoDeploy: true
