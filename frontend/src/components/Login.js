@@ -16,10 +16,8 @@ const Login = () => {
     try {
       console.log("Attempting login with email:", formData.email);
 
-      const response = await axios.post(
-        "http://localhost:5000/auth/login",
-        formData
-      );
+      const API_BASE = process.env.REACT_APP_API_URL || "";
+      const response = await axios.post(`${API_BASE}/auth/login`, formData);
 
       // Log the entire response data
       console.log("Full login response data:", response.data);

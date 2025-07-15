@@ -78,8 +78,9 @@ const Register = () => {
 
     try {
       const { confirmPassword, ...submitData } = formData;
+      const API_BASE = process.env.REACT_APP_API_URL || "";
       const response = await axios.post(
-        "http://localhost:5000/auth/register",
+        `${API_BASE}/auth/register`,
         submitData
       );
 
