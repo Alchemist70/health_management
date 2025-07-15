@@ -9,13 +9,15 @@ const AdminDoctorApproval = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_BASE = process.env.REACT_APP_API_URL || "";
+
   const handleAuth = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
       // Try to fetch pending doctors with the admin code
-      const res = await axios.get("/api/doctors/pending", {
+      const res = await axios.get(`${API_BASE}/api/doctors/pending`, {
         headers: { "x-admin-code": adminCode },
       });
       setPendingDoctors(res.data);
@@ -31,7 +33,7 @@ const AdminDoctorApproval = () => {
   const fetchPendingDoctors = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/api/doctors/pending", {
+      const res = await axios.get(`${API_BASE}/api/doctors/pending`, {
         headers: { "x-admin-code": adminCode },
       });
       setPendingDoctors(res.data);
@@ -44,7 +46,9 @@ const AdminDoctorApproval = () => {
 
   const handleDownload = async (id) => {
     try {
-      window.open(`/api/doctors/credentials/${id}?admin_code=${adminCode}`);
+      window.open(
+        `${API_BASE}/api/doctors/credentials/${id}?admin_code=${adminCode}`
+      );
     } catch (err) {
       setError("Failed to download credentials.");
     }
@@ -54,7 +58,7 @@ const AdminDoctorApproval = () => {
     setLoading(true);
     try {
       await axios.post(
-        `/api/doctors/approve/${id}`,
+        `${API_BASE}/api/doctors/approve/${id}`,
         { admin_code: adminCode },
         { headers: { "x-admin-code": adminCode } }
       );
@@ -70,7 +74,7 @@ const AdminDoctorApproval = () => {
     setLoading(true);
     try {
       await axios.post(
-        `/api/doctors/reject/${id}`,
+        `${API_BASE}/api/doctors/reject/${id}`,
         { admin_code: adminCode },
         { headers: { "x-admin-code": adminCode } }
       );
