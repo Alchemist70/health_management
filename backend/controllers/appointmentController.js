@@ -27,7 +27,32 @@ const getPatientAppointments = async (req, res) => {
     const appointments = await Appointment.find({ patient_id: patientId })
       .populate("doctor_id", "name email")
       .sort({ appointment_date: -1 });
-    res.json(appointments);
+    // Map doctor info and ensure time is string in 24-hour format
+    const appointmentsWithDoctor = appointments.map((apt) => {
+      let doctorName = "N/A";
+      let doctorEmail = "N/A";
+      if (apt.doctor_id && typeof apt.doctor_id === "object") {
+        doctorName = apt.doctor_id.name || "N/A";
+        doctorEmail = apt.doctor_id.email || "N/A";
+      }
+      // Ensure time is string in HH:mm (24-hour) format
+      let time = apt.appointment_time;
+      if (time instanceof Date) {
+        // If stored as Date, convert to HH:mm
+        time = time.toLocaleTimeString("en-GB", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+      }
+      return {
+        ...apt.toObject(),
+        doctor_name: doctorName,
+        doctor_email: doctorEmail,
+        appointment_time: time,
+      };
+    });
+    res.json(appointmentsWithDoctor);
   } catch (err) {
     console.error("Error fetching patient appointments:", err);
     res.status(500).json({ message: "Failed to fetch appointments" });
