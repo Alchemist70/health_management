@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Register from "./pages/Register.js";
 import Login from "./components/Login.js";
 import ResetPassword from "./components/ResetPassword.js";
@@ -23,14 +23,23 @@ import PatientLabReports from "./pages/PatientLabReports.js";
 import PatientEmergencyCases from "./pages/PatientEmergencyCases.js";
 import DoctorRegister from "./pages/DoctorRegister.js";
 import AdminDoctorApproval from "./pages/AdminDoctorApproval.js";
+import Footer from "./components/Footer.js";
 import "./styles/App.css";
 
 function App() {
-  console.log("App component loaded!");
+  const location = useLocation();
+  const hideFooterRoutes = [
+    "/login",
+    "/register",
+    "/doctor-register",
+    "/admin/doctor-approval",
+    "/reset-password",
+  ];
+  const shouldShowFooter = !hideFooterRoutes.includes(location.pathname);
 
   return (
     <div className="app">
-      <Header />
+      {location.pathname !== "/admin/doctor-approval" && <Header />}
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -66,6 +75,7 @@ function App() {
           />
         </Routes>
       </main>
+      {shouldShowFooter && <Footer />}
     </div>
   );
 }
