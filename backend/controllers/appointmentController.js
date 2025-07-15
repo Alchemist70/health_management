@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const Appointment = require("../models/appointmentModel");
 const TimeSlot = require("../models/timeSlotModel");
+const mongoose = require("mongoose");
 
 // Get all doctors
 const getDoctors = async (req, res) => {
@@ -45,8 +46,9 @@ const getDoctorAppointments = async (req, res) => {
 const getAvailableSlots = async (req, res) => {
   try {
     const { doctorId } = req.params;
+    const objectId = mongoose.Types.ObjectId(doctorId);
     const slots = await TimeSlot.find({
-      doctor_id: doctorId,
+      doctor_id: objectId,
       is_available: true,
     }).sort({ slot_date: 1, slot_time: 1 });
     // Ensure each slot has an 'id' field for frontend compatibility
@@ -159,8 +161,9 @@ const getAppointmentById = async (req, res) => {
 const addTimeSlot = async (req, res) => {
   try {
     const { doctorId, slotDate, slotTime } = req.body;
+    const objectId = mongoose.Types.ObjectId(doctorId);
     const timeSlot = await TimeSlot.create({
-      doctor_id: doctorId,
+      doctor_id: objectId,
       slot_date: slotDate,
       slot_time: slotTime,
       is_available: true,
