@@ -6,8 +6,14 @@ const mongoose = require("mongoose");
 // Get all doctors
 const getDoctors = async (req, res) => {
   try {
-    const doctors = await User.find({ role: "doctor" }, "id name email");
-    res.json(doctors);
+    const doctors = await User.find({ role: "doctor" }, "_id name email");
+    // Always return id as string for frontend compatibility
+    const doctorsWithId = doctors.map((doc) => ({
+      id: doc._id.toString(),
+      name: doc.name,
+      email: doc.email,
+    }));
+    res.json(doctorsWithId);
   } catch (err) {
     console.error("Error fetching doctors:", err);
     res.status(500).json({ message: "Failed to fetch doctors" });
