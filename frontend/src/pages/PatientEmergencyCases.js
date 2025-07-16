@@ -41,6 +41,17 @@ const PatientEmergencyCases = () => {
               {em.doctor_id && em.doctor_name && (
                 <span className="meta">Written by Dr. {em.doctor_name}</span>
               )}
+              {em.pdf && (
+                <div>
+                  <a
+                    href={`/${em.pdf}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Download PDF
+                  </a>
+                </div>
+              )}
             </li>
           ))}
         </ul>

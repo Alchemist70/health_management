@@ -41,6 +41,17 @@ const PatientLabReports = () => {
               {rep.doctor_id && rep.doctor_name && (
                 <span className="meta">Written by Dr. {rep.doctor_name}</span>
               )}
+              {rep.pdf && (
+                <div>
+                  <a
+                    href={`/${rep.pdf}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Download PDF
+                  </a>
+                </div>
+              )}
             </li>
           ))}
         </ul>
