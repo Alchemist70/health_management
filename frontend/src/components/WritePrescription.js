@@ -120,7 +120,7 @@ const WritePrescription = () => {
           >
             <option value="">Select a patient</option>
             {patients.map((patient) => (
-              <option key={patient.id} value={patient.id}>
+              <option key={patient._id} value={patient._id}>
                 {patient.name}
               </option>
             ))}
