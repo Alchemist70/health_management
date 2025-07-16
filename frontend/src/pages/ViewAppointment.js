@@ -194,7 +194,17 @@ const ViewAppointment = () => {
     hour = hour % 12 || 12;
     return `${hour}:${m} ${ampm}`;
   }
-  const isUpcoming = appointmentDate > new Date();
+
+  // Safely define appointmentDate for isUpcoming calculation
+  let appointmentDate = null;
+  if (appointment && appointment.appointment_date) {
+    if (appointment.appointment_date.includes("T")) {
+      appointmentDate = new Date(appointment.appointment_date);
+    } else {
+      appointmentDate = new Date(appointment.appointment_date);
+    }
+  }
+  const isUpcoming = appointmentDate && appointmentDate > new Date();
 
   return (
     <div className="view-appointment-container">
