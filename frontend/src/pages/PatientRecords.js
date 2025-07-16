@@ -73,30 +73,30 @@ const PatientRecords = () => {
               <h3>Patient Information</h3>
               <ul>
                 <li>
-                  <strong>Name:</strong> {patientInfo.name}
+                  <strong>Name:</strong> {patientInfo.name || "-"}
                 </li>
                 <li>
-                  <strong>Email:</strong> {patientInfo.email}
+                  <strong>Email:</strong> {patientInfo.email || "-"}
                 </li>
                 <li>
-                  <strong>Date of Birth:</strong> {patientInfo.dob}
+                  <strong>Date of Birth:</strong> {patientInfo.dob || "-"}
                 </li>
                 <li>
-                  <strong>Gender:</strong> {patientInfo.gender}
+                  <strong>Gender:</strong> {patientInfo.gender || "-"}
                 </li>
                 <li>
-                  <strong>Phone:</strong> {patientInfo.phone}
+                  <strong>Phone:</strong> {patientInfo.phone || "-"}
                 </li>
                 <li>
-                  <strong>Address:</strong> {patientInfo.address}
+                  <strong>Address:</strong> {patientInfo.address || "-"}
                 </li>
                 <li>
                   <strong>National ID/Insurance:</strong>{" "}
-                  {patientInfo.national_id}
+                  {patientInfo.national_id || "-"}
                 </li>
                 <li>
                   <strong>Emergency Contact:</strong>{" "}
-                  {patientInfo.emergency_contact}
+                  {patientInfo.emergency_contact || "-"}
                 </li>
               </ul>
             </div>
