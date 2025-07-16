@@ -6,7 +6,7 @@ const createPrescription = async (req, res) => {
   console.log("\n=== Creating Prescription ===");
   const { patient_id, symptoms, diagnosis, medications, instructions } =
     req.body;
-  const doctor_id = req.user.id;
+  const doctor_id = req.user && req.user.id;
 
   console.log("Received prescription data:", {
     patient_id,
@@ -17,12 +17,37 @@ const createPrescription = async (req, res) => {
     instructions,
   });
 
+  // Validation
+  if (!patient_id) {
+    console.error("Missing patient_id");
+    return res.status(400).json({ message: "Missing patient_id" });
+  }
+  if (!doctor_id) {
+    console.error("Missing doctor_id from token");
+    return res.status(400).json({ message: "Missing doctor_id (token issue)" });
+  }
+  if (!symptoms) {
+    console.error("Missing symptoms");
+    return res.status(400).json({ message: "Missing symptoms" });
+  }
+  if (!diagnosis) {
+    console.error("Missing diagnosis");
+    return res.status(400).json({ message: "Missing diagnosis" });
+  }
+  if (!Array.isArray(medications) || medications.length === 0) {
+    console.error("Medications must be a non-empty array");
+    return res
+      .status(400)
+      .json({ message: "Medications must be a non-empty array" });
+  }
+
   try {
     // Get patient and doctor details
     const patient = await User.findById(patient_id);
     const doctor = await User.findById(doctor_id);
     if (!patient || !doctor) {
-      throw new Error("Patient or doctor not found");
+      console.error("Patient or doctor not found", { patient, doctor });
+      return res.status(400).json({ message: "Patient or doctor not found" });
     }
 
     // Ensure medications is an array
