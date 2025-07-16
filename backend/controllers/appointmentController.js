@@ -219,7 +219,22 @@ const getAppointmentById = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    res.json(appointment);
+    // Add patient_name and doctor_name fields for frontend compatibility
+    let patientName = "N/A";
+    let doctorName = "N/A";
+    if (appointment.patient_id && typeof appointment.patient_id === "object") {
+      patientName = appointment.patient_id.name || "N/A";
+    }
+    if (appointment.doctor_id && typeof appointment.doctor_id === "object") {
+      doctorName = appointment.doctor_id.name || "N/A";
+    }
+    const appointmentObj = {
+      ...appointment.toObject(),
+      patient_name: patientName,
+      doctor_name: doctorName,
+    };
+
+    res.json(appointmentObj);
   } catch (err) {
     console.error("Error fetching appointment:", err);
     res.status(500).json({ message: "Failed to fetch appointment" });
