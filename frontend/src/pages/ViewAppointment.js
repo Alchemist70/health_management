@@ -215,16 +215,16 @@ const ViewAppointment = () => {
           onClose={() => setNotification(null)}
         />
       )}
-      {dateError && (
-        <div className="error-state">
-          <p style={{ color: "red" }}>{dateError}</p>
-        </div>
-      )}
+      {/* dateError is not defined in the original code, so this block is removed */}
       <div className="appointment-details-card">
         <div className="appointment-header">
           <h2>Appointment Details</h2>
-          <span className={`status ${appointment.status.toLowerCase()}`}>
-            {appointment.status}
+          <span
+            className={`status ${
+              appointment.status ? appointment.status.toLowerCase() : ""
+            }`}
+          >
+            {appointment.status || ""}
           </span>
         </div>
 
@@ -252,12 +252,12 @@ const ViewAppointment = () => {
 
           <div className="info-group">
             <h3>Symptoms</h3>
-            <p className="symptoms-text">{appointment.symptoms}</p>
+            <p className="symptoms-text">{appointment.symptoms || ""}</p>
           </div>
 
           <div className="info-group">
             <h3>Notes</h3>
-            <p className="notes-text">{appointment.notes}</p>
+            <p className="notes-text">{appointment.notes || ""}</p>
           </div>
 
           {appointment.prescription && (
