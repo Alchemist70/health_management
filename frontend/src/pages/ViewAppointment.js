@@ -243,8 +243,10 @@ const ViewAppointment = () => {
             <h3>{userRole === "doctor" ? "Patient" : "Doctor"}</h3>
             <p>
               {userRole === "doctor"
-                ? appointment.patient_name
-                : appointment.doctor_name}
+                ? appointment.patient_name ||
+                  (appointment.patient_id && appointment.patient_id.name)
+                : appointment.doctor_name ||
+                  (appointment.doctor_id && appointment.doctor_id.name)}
             </p>
           </div>
 
