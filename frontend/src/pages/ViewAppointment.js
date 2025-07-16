@@ -169,7 +169,21 @@ const ViewAppointment = () => {
   }
 
   const isScheduled = appointment.status === "scheduled";
-  const appointmentDate = new Date(appointment.appointment_date);
+  // Construct correct appointmentDate using both date and time if available
+  let appointmentDate;
+  if (
+    appointment &&
+    appointment.appointment_date &&
+    appointment.appointment_time
+  ) {
+    appointmentDate = new Date(
+      `${appointment.appointment_date}T${appointment.appointment_time}`
+    );
+  } else if (appointment && appointment.appointment_date) {
+    appointmentDate = new Date(appointment.appointment_date);
+  } else {
+    appointmentDate = new Date();
+  }
   const isUpcoming = appointmentDate > new Date();
 
   return (
