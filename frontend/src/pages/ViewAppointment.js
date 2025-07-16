@@ -168,7 +168,8 @@ const ViewAppointment = () => {
     );
   }
 
-  const isScheduled = appointment.status === "scheduled";
+  // Debug: Log the appointment object to inspect date/time fields
+  console.log("Appointment object:", appointment);
   // Construct correct appointmentDate using both date and time if available
   let appointmentDate;
   if (
