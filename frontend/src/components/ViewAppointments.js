@@ -14,9 +14,16 @@ const ViewAppointments = () => {
   const navigate = useNavigate();
 
   const isAppointmentElapsed = (appointment) => {
-    const appointmentDate = new Date(appointment.appointment_date);
+    if (!appointment.appointment_date || !appointment.appointment_time)
+      return false;
+    let dateStr = appointment.appointment_date;
+    // If dateStr is already an ISO string, strip the time part
+    if (dateStr.includes("T")) dateStr = dateStr.split("T")[0];
+    let timeStr = appointment.appointment_time;
+    if (/^\d{2}:\d{2}$/.test(timeStr)) timeStr += ":00";
+    const appointmentDateTime = new Date(`${dateStr}T${timeStr}`);
     const now = new Date();
-    return appointmentDate < now;
+    return appointmentDateTime < now;
   };
 
   const checkAndUpdateElapsedAppointments = async () => {
