@@ -221,8 +221,12 @@ const ViewAppointment = () => {
         <div className="appointment-info-grid">
           <div className="info-group">
             <h3>Date & Time</h3>
-            <p className="date">{dateString}</p>
-            <p className="time">{formatTime(appointment.appointment_time)}</p>
+            <p className="date">{appointment ? dateString : ""}</p>
+            <p className="time">
+              {appointment && appointment.appointment_time
+                ? formatTime(appointment.appointment_time)
+                : ""}
+            </p>
           </div>
 
           <div className="info-group">
