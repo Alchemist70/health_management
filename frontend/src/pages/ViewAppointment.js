@@ -179,24 +179,24 @@ const ViewAppointment = () => {
 
   let appointmentDate;
   let dateError = null;
-  if (
-    appointment &&
-    appointment.appointment_date &&
-    appointment.appointment_time
-  ) {
-    let time = appointment.appointment_time;
-    if (/^\d{2}:\d{2}$/.test(time)) {
-      time += ":00";
+  if (appointment && appointment.appointment_date) {
+    if (appointment.appointment_date.includes("T")) {
+      // appointment_date is already a full ISO string
+      appointmentDate = new Date(appointment.appointment_date);
+    } else if (appointment.appointment_time) {
+      // Combine date and time
+      let time = appointment.appointment_time;
+      if (/^\d{2}:\d{2}$/.test(time)) {
+        time += ":00";
+      }
+      appointmentDate = new Date(`${appointment.appointment_date}T${time}`);
+    } else {
+      appointmentDate = new Date(appointment.appointment_date);
     }
-    const dateString = `${appointment.appointment_date}T${time}`;
-    appointmentDate = new Date(dateString);
     if (isNaN(appointmentDate.getTime())) {
-      dateError = `Invalid date/time: ${dateString}`;
-    }
-  } else if (appointment && appointment.appointment_date) {
-    appointmentDate = new Date(appointment.appointment_date);
-    if (isNaN(appointmentDate.getTime())) {
-      dateError = `Invalid date: ${appointment.appointment_date}`;
+      dateError = `Invalid date: ${appointment.appointment_date} ${
+        appointment.appointment_time || ""
+      }`;
     }
   } else {
     appointmentDate = new Date();
