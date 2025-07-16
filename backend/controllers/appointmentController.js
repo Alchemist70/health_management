@@ -66,7 +66,21 @@ const getDoctorAppointments = async (req, res) => {
     const appointments = await Appointment.find({ doctor_id: doctorId })
       .populate("patient_id", "name email")
       .sort({ appointment_date: -1 });
-    res.json(appointments);
+
+    const appointmentsWithPatient = appointments.map((apt) => {
+      let patientName = "N/A";
+      let patientEmail = "N/A";
+      if (apt.patient_id && typeof apt.patient_id === "object") {
+        patientName = apt.patient_id.name || "N/A";
+        patientEmail = apt.patient_id.email || "N/A";
+      }
+      return {
+        ...apt.toObject(),
+        patient_name: patientName,
+        patient_email: patientEmail,
+      };
+    });
+    res.json(appointmentsWithPatient);
   } catch (err) {
     console.error("Error fetching doctor appointments:", err);
     res.status(500).json({ message: "Failed to fetch appointments" });
