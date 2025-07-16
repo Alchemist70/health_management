@@ -168,25 +168,39 @@ const ViewAppointment = () => {
     );
   }
 
-  // Debug: Log the appointment object to inspect date/time fields
-  console.log("Appointment object:", appointment);
-  // Construct correct appointmentDate using both date and time if available
+  // Defensive: Log appointment object and check for required fields
+  if (appointment) {
+    try {
+      console.log("Appointment object:", appointment);
+    } catch (e) {
+      console.log("Could not log appointment object");
+    }
+  }
+
   let appointmentDate;
+  let dateError = null;
   if (
     appointment &&
     appointment.appointment_date &&
     appointment.appointment_time
   ) {
-    // Ensure time is in HH:mm:ss format
     let time = appointment.appointment_time;
     if (/^\d{2}:\d{2}$/.test(time)) {
       time += ":00";
     }
-    appointmentDate = new Date(`${appointment.appointment_date}T${time}`);
+    const dateString = `${appointment.appointment_date}T${time}`;
+    appointmentDate = new Date(dateString);
+    if (isNaN(appointmentDate.getTime())) {
+      dateError = `Invalid date/time: ${dateString}`;
+    }
   } else if (appointment && appointment.appointment_date) {
     appointmentDate = new Date(appointment.appointment_date);
+    if (isNaN(appointmentDate.getTime())) {
+      dateError = `Invalid date: ${appointment.appointment_date}`;
+    }
   } else {
     appointmentDate = new Date();
+    dateError = "Missing appointment date/time fields";
   }
   const isUpcoming = appointmentDate > new Date();
 
@@ -198,6 +212,11 @@ const ViewAppointment = () => {
           type={notification.type}
           onClose={() => setNotification(null)}
         />
+      )}
+      {dateError && (
+        <div className="error-state">
+          <p style={{ color: "red" }}>{dateError}</p>
+        </div>
       )}
       <div className="appointment-details-card">
         <div className="appointment-header">
@@ -283,7 +302,7 @@ const ViewAppointment = () => {
         </div>
 
         <div className="appointment-actions">
-          {userRole === "doctor" && isScheduled && (
+          {userRole === "doctor" && isUpcoming && (
             <>
               <button
                 onClick={() => handleStatusUpdate("completed")}
@@ -299,7 +318,7 @@ const ViewAppointment = () => {
               </button>
             </>
           )}
-          {userRole === "patient" && isScheduled && isUpcoming && (
+          {userRole === "patient" && isUpcoming && (
             <button
               onClick={() => handleStatusUpdate("cancelled")}
               className="action-button cancel"
