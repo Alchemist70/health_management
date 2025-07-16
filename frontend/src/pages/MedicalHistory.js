@@ -26,6 +26,7 @@ const MedicalHistory = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({ id: null, history: "", history_date: "" });
   const [editing, setEditing] = useState(false);
+  const [pdf, setPdf] = useState(null);
 
   // For patients, always use their own ID
   useEffect(() => {
@@ -57,24 +58,33 @@ const MedicalHistory = () => {
   }, [patientIdFromContext, selectedPatient, userRole]);
 
   // Doctor-only handlers
+  const handleFileChange = (e) => {
+    setPdf(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("patient_id", selectedPatient);
+      formData.append("history", form.history);
+      formData.append("history_date", form.history_date);
+      if (pdf) {
+        formData.append("pdf", pdf);
+      }
       if (editing) {
-        await updateMedicalHistory({ ...form, id: form.id });
+        formData.append("id", form.id);
+        await updateMedicalHistory(formData, true); // true = isFormData
         setNotification({
           message: "Medical history updated!",
           type: "success",
         });
       } else {
-        await addMedicalHistory({
-          patientId: selectedPatient,
-          history: form.history,
-          history_date: form.history_date,
-        });
+        await addMedicalHistory(formData, true); // true = isFormData
         setNotification({ message: "Medical history added!", type: "success" });
       }
       setForm({ id: null, history: "", history_date: "" });
+      setPdf(null);
       setEditing(false);
       setModalOpen(false);
       loadHistory(selectedPatient);
@@ -157,6 +167,12 @@ const MedicalHistory = () => {
             onChange={(e) => setForm({ ...form, history_date: e.target.value })}
             style={{ marginBottom: 8 }}
           />
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            style={{ marginBottom: 8 }}
+          />
           <button
             type="submit"
             className="action-button complete"
@@ -171,6 +187,7 @@ const MedicalHistory = () => {
               setModalOpen(false);
               setEditing(false);
               setForm({ id: null, history: "", history_date: "" });
+              setPdf(null);
             }}
           >
             Cancel
@@ -187,6 +204,17 @@ const MedicalHistory = () => {
             <li key={rec.id}>
               <strong>{rec.history}</strong>
               <span className="meta">{rec.history_date}</span>
+              {rec.pdf && (
+                <div>
+                  <a
+                    href={`/${rec.pdf}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View PDF
+                  </a>
+                </div>
+              )}
               {userRole !== "patient" && (
                 <div style={{ marginTop: 8 }}>
                   <button

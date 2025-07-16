@@ -14,6 +14,7 @@ const emergencyCaseSchema = new mongoose.Schema(
     },
     case_description: { type: String, required: true },
     case_date: { type: Date, required: true },
+    pdf: { type: String },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );

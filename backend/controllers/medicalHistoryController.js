@@ -30,12 +30,17 @@ const addMedicalHistory = async (req, res) => {
   try {
     const { patient_id, history, history_date } = req.body;
     const doctor_id = req.user.id;
+    let pdf = null;
+    if (req.file) {
+      pdf = req.file.path.replace("backend/", ""); // Store relative path
+    }
 
     const medicalHistory = await MedicalHistory.create({
       patient_id,
       doctor_id,
       history,
       history_date: history_date || new Date(),
+      pdf,
     });
 
     res.status(201).json(medicalHistory);

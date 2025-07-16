@@ -25,6 +25,7 @@ const LabReports = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({ id: null, report: "", report_date: "" });
   const [editing, setEditing] = useState(false);
+  const [pdf, setPdf] = useState(null);
 
   const loadReports = async (pid) => {
     if (!pid) return setReports([]);
@@ -48,21 +49,30 @@ const LabReports = () => {
       setSelectedPatient(patientIdFromContext);
   }, [patientIdFromContext, selectedPatient]);
 
+  const handleFileChange = (e) => {
+    setPdf(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("patient_id", selectedPatient);
+      formData.append("report", form.report);
+      formData.append("report_date", form.report_date);
+      if (pdf) {
+        formData.append("pdf", pdf);
+      }
       if (editing) {
-        await updateLabReport({ ...form, id: form.id });
+        formData.append("id", form.id);
+        await updateLabReport(formData, true); // true = isFormData
         setNotification({ message: "Lab report updated!", type: "success" });
       } else {
-        await addLabReport({
-          patientId: selectedPatient,
-          report: form.report,
-          report_date: form.report_date,
-        });
+        await addLabReport(formData, true); // true = isFormData
         setNotification({ message: "Lab report added!", type: "success" });
       }
       setForm({ id: null, report: "", report_date: "" });
+      setPdf(null);
       setEditing(false);
       setModalOpen(false);
       loadReports(selectedPatient);
@@ -131,6 +141,12 @@ const LabReports = () => {
             onChange={(e) => setForm({ ...form, report_date: e.target.value })}
             style={{ marginBottom: 8 }}
           />
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            style={{ marginBottom: 8 }}
+          />
           <button
             type="submit"
             className="action-button complete"
@@ -145,6 +161,7 @@ const LabReports = () => {
               setModalOpen(false);
               setEditing(false);
               setForm({ id: null, report: "", report_date: "" });
+              setPdf(null);
             }}
           >
             Cancel
@@ -161,6 +178,17 @@ const LabReports = () => {
             <li key={rep.id}>
               <strong>{rep.report}</strong>
               <span className="meta">{rep.report_date}</span>
+              {rep.pdf && (
+                <div>
+                  <a
+                    href={`/${rep.pdf}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View PDF
+                  </a>
+                </div>
+              )}
               <div style={{ marginTop: 8 }}>
                 <button
                   className="action-button complete"

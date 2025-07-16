@@ -30,12 +30,17 @@ const addEmergencyCase = async (req, res) => {
   try {
     const { patient_id, case_description, case_date } = req.body;
     const doctor_id = req.user.id;
+    let pdf = null;
+    if (req.file) {
+      pdf = req.file.path.replace("backend/", ""); // Store relative path
+    }
 
     const emergencyCase = await EmergencyCase.create({
       patient_id,
       doctor_id,
       case_description,
       case_date: case_date || new Date(),
+      pdf,
     });
 
     res.status(201).json(emergencyCase);

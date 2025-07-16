@@ -29,6 +29,7 @@ const EmergencyCases = () => {
     case_date: "",
   });
   const [editing, setEditing] = useState(false);
+  const [pdf, setPdf] = useState(null);
 
   const loadCases = async (pid) => {
     if (!pid) return setCases([]);
@@ -52,24 +53,33 @@ const EmergencyCases = () => {
       setSelectedPatient(patientIdFromContext);
   }, [patientIdFromContext, selectedPatient]);
 
+  const handleFileChange = (e) => {
+    setPdf(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("patient_id", selectedPatient);
+      formData.append("case_description", form.case_description);
+      formData.append("case_date", form.case_date);
+      if (pdf) {
+        formData.append("pdf", pdf);
+      }
       if (editing) {
-        await updateEmergencyCase({ ...form, id: form.id });
+        formData.append("id", form.id);
+        await updateEmergencyCase(formData, true); // true = isFormData
         setNotification({
           message: "Emergency case updated!",
           type: "success",
         });
       } else {
-        await addEmergencyCase({
-          patientId: selectedPatient,
-          case_description: form.case_description,
-          case_date: form.case_date,
-        });
+        await addEmergencyCase(formData, true); // true = isFormData
         setNotification({ message: "Emergency case added!", type: "success" });
       }
       setForm({ id: null, case_description: "", case_date: "" });
+      setPdf(null);
       setEditing(false);
       setModalOpen(false);
       loadCases(selectedPatient);
@@ -147,6 +157,12 @@ const EmergencyCases = () => {
             onChange={(e) => setForm({ ...form, case_date: e.target.value })}
             style={{ marginBottom: 8 }}
           />
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+            style={{ marginBottom: 8 }}
+          />
           <button
             type="submit"
             className="action-button complete"
@@ -161,6 +177,7 @@ const EmergencyCases = () => {
               setModalOpen(false);
               setEditing(false);
               setForm({ id: null, case_description: "", case_date: "" });
+              setPdf(null);
             }}
           >
             Cancel
@@ -177,6 +194,17 @@ const EmergencyCases = () => {
             <li key={em.id}>
               <strong>{em.case_description}</strong>
               <span className="meta">{em.case_date}</span>
+              {em.pdf && (
+                <div>
+                  <a
+                    href={`/${em.pdf}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    View PDF
+                  </a>
+                </div>
+              )}
               <div style={{ marginTop: 8 }}>
                 <button
                   className="action-button complete"

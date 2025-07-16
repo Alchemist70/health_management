@@ -14,6 +14,7 @@ const labReportSchema = new mongoose.Schema(
     },
     report: { type: String, required: true },
     report_date: { type: Date, required: true },
+    pdf: { type: String },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );

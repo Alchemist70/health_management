@@ -14,6 +14,7 @@ const medicalHistorySchema = new mongoose.Schema(
     },
     history: { type: String, required: true },
     history_date: { type: Date, required: true },
+    pdf: { type: String },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );
