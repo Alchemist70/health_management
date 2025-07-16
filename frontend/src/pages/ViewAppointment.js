@@ -176,9 +176,12 @@ const ViewAppointment = () => {
     appointment.appointment_date &&
     appointment.appointment_time
   ) {
-    appointmentDate = new Date(
-      `${appointment.appointment_date}T${appointment.appointment_time}`
-    );
+    // Ensure time is in HH:mm:ss format
+    let time = appointment.appointment_time;
+    if (/^\d{2}:\d{2}$/.test(time)) {
+      time += ":00";
+    }
+    appointmentDate = new Date(`${appointment.appointment_date}T${time}`);
   } else if (appointment && appointment.appointment_date) {
     appointmentDate = new Date(appointment.appointment_date);
   } else {
