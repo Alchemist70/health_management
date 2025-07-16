@@ -13,4 +13,11 @@ router.get(
   prescriptionController.getPatientPrescriptions
 );
 
+// Add a route for GET /api/prescriptions for compatibility with doctor view
+router.get(
+  "/",
+  authenticateToken,
+  prescriptionController.getPatientPrescriptions
+);
+
 module.exports = router;
