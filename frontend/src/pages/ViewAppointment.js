@@ -177,30 +177,22 @@ const ViewAppointment = () => {
     }
   }
 
-  let appointmentDate;
-  let dateError = null;
-  if (appointment && appointment.appointment_date) {
-    if (appointment.appointment_date.includes("T")) {
-      // appointment_date is already a full ISO string
-      appointmentDate = new Date(appointment.appointment_date);
-    } else if (appointment.appointment_time) {
-      // Combine date and time
-      let time = appointment.appointment_time;
-      if (/^\d{2}:\d{2}$/.test(time)) {
-        time += ":00";
-      }
-      appointmentDate = new Date(`${appointment.appointment_date}T${time}`);
-    } else {
-      appointmentDate = new Date(appointment.appointment_date);
-    }
-    if (isNaN(appointmentDate.getTime())) {
-      dateError = `Invalid date: ${appointment.appointment_date} ${
-        appointment.appointment_time || ""
-      }`;
-    }
-  } else {
-    appointmentDate = new Date();
-    dateError = "Missing appointment date/time fields";
+  // For the date, use only the date part (YYYY-MM-DD)
+  const dateString =
+    appointment && appointment.appointment_date
+      ? appointment.appointment_date.includes("T")
+        ? appointment.appointment_date.split("T")[0]
+        : appointment.appointment_date
+      : "";
+
+  // For the time, use appointment_time directly, and format to 12-hour if needed
+  function formatTime(time) {
+    if (!time) return "";
+    let [h, m] = time.split(":");
+    let hour = parseInt(h, 10);
+    let ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+    return `${hour}:${m} ${ampm}`;
   }
   const isUpcoming = appointmentDate > new Date();
 
@@ -229,14 +221,8 @@ const ViewAppointment = () => {
         <div className="appointment-info-grid">
           <div className="info-group">
             <h3>Date & Time</h3>
-            <p className="date">{appointmentDate.toLocaleDateString()}</p>
-            <p className="time">
-              {appointmentDate.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              })}
-            </p>
+            <p className="date">{dateString}</p>
+            <p className="time">{formatTime(appointment.appointment_time)}</p>
           </div>
 
           <div className="info-group">
