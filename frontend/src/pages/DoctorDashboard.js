@@ -41,7 +41,12 @@ const DoctorDashboard = () => {
           return apptDateStr === todayStr;
         })
         .map((appointment) => {
-          const appointmentDateTime = new Date(appointment.appointment_date);
+          // Combine date and time for accurate DateTime
+          let dateStr = appointment.appointment_date;
+          if (dateStr.includes("T")) dateStr = dateStr.split("T")[0];
+          let timeStr = appointment.appointment_time;
+          if (/^\d{2}:\d{2}$/.test(timeStr)) timeStr += ":00";
+          const appointmentDateTime = new Date(`${dateStr}T${timeStr}`);
           const now = new Date();
 
           // Calculate time difference in hours
@@ -49,20 +54,20 @@ const DoctorDashboard = () => {
 
           // Check if appointment should be marked as elapsed
           let status = appointment.status || "scheduled";
-          if (status === "scheduled" && timeDiffHours >= 3) {
+          if (status === "scheduled" && appointmentDateTime < now) {
             status = "elapsed";
           }
 
+          // Format time for display
+          const displayTime = appointmentDateTime.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+
           return {
-            time: new Date(appointment.appointment_date).toLocaleTimeString(
-              [],
-              {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              }
-            ),
-            isElapsed: timeDiffHours >= 3,
+            time: displayTime,
+            isElapsed: appointmentDateTime < now,
             patient:
               appointment.patient_name || `Patient ${appointment.patient_id}`,
             type: appointment.type || "Consultation",
@@ -71,11 +76,7 @@ const DoctorDashboard = () => {
             appointmentDateTime: appointmentDateTime,
           };
         })
-        .sort((a, b) => {
-          const timeA = new Date(`1970/01/01 ${a.time}`);
-          const timeB = new Date(`1970/01/01 ${b.time}`);
-          return timeA - timeB;
-        });
+        .sort((a, b) => a.appointmentDateTime - b.appointmentDateTime);
 
       console.log("Today's filtered appointments:", todayAppts);
       setTodayAppointments(todayAppts);
