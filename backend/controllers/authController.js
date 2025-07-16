@@ -6,7 +6,18 @@ const DoctorRegistration = require("../models/doctorRegistrationModel");
 // Register user
 const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const {
+      name,
+      email,
+      password,
+      role,
+      dob,
+      gender,
+      phone,
+      address,
+      national_id,
+      emergency_contact,
+    } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -24,6 +35,12 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      dob,
+      gender,
+      phone,
+      address,
+      national_id,
+      emergency_contact,
     });
 
     // Create token
@@ -88,11 +105,9 @@ const login = async (req, res) => {
           .status(403)
           .json({ message: "Your registration is pending admin approval." });
       } else if (doctorReg.status === "rejected") {
-        return res
-          .status(403)
-          .json({
-            message: "Your registration was rejected. Please contact support.",
-          });
+        return res.status(403).json({
+          message: "Your registration was rejected. Please contact support.",
+        });
       }
     }
 

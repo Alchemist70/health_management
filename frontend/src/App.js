@@ -25,6 +25,7 @@ import DoctorRegister from "./pages/DoctorRegister.js";
 import AdminDoctorApproval from "./pages/AdminDoctorApproval.js";
 import Footer from "./components/Footer.js";
 import "./styles/App.css";
+import Profile from "./pages/Profile.js";
 
 function App() {
   const location = useLocation();
@@ -73,6 +74,7 @@ function App() {
             path="/admin/doctor-approval"
             element={<AdminDoctorApproval />}
           />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
       {shouldShowFooter && <Footer />}
