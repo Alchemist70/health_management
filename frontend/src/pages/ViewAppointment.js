@@ -268,40 +268,42 @@ const ViewAppointment = () => {
           )}
         </div>
 
-        <div style={{ margin: "24px 0" }}>
-          <button
-            className="action-button"
-            onClick={() =>
-              navigate("/lab-reports", {
-                state: { patientId: appointment.patient_id },
-              })
-            }
-            style={{ marginRight: 8 }}
-          >
-            View/Edit Lab Reports
-          </button>
-          <button
-            className="action-button"
-            onClick={() =>
-              navigate("/medical-history", {
-                state: { patientId: appointment.patient_id },
-              })
-            }
-            style={{ marginRight: 8 }}
-          >
-            View/Edit Medical History
-          </button>
-          <button
-            className="action-button"
-            onClick={() =>
-              navigate("/emergency", {
-                state: { patientId: appointment.patient_id },
-              })
-            }
-          >
-            View/Edit Emergency Cases
-          </button>
-        </div>
+        {userRole === "doctor" && (
+          <div style={{ margin: "24px 0" }}>
+            <button
+              className="action-button"
+              onClick={() =>
+                navigate("/lab-reports", {
+                  state: { patientId: appointment.patient_id },
+                })
+              }
+              style={{ marginRight: 8 }}
+            >
+              View/Edit Lab Reports
+            </button>
+            <button
+              className="action-button"
+              onClick={() =>
+                navigate("/medical-history", {
+                  state: { patientId: appointment.patient_id },
+                })
+              }
+              style={{ marginRight: 8 }}
+            >
+              View/Edit Medical History
+            </button>
+            <button
+              className="action-button"
+              onClick={() =>
+                navigate("/emergency", {
+                  state: { patientId: appointment.patient_id },
+                })
+              }
+            >
+              View/Edit Emergency Cases
+            </button>
+          </div>
+        )}
 
         <div className="appointment-actions">
           {userRole === "doctor" && isUpcoming && (
