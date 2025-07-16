@@ -207,7 +207,7 @@ const MedicalHistory = () => {
               {rec.pdf && (
                 <div>
                   <a
-                    href={`/${rec.pdf}`}
+                    href={`/uploads/${rec.pdf}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

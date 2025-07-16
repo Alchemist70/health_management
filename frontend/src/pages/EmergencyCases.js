@@ -197,7 +197,7 @@ const EmergencyCases = () => {
               {em.pdf && (
                 <div>
                   <a
-                    href={`/${em.pdf}`}
+                    href={`/uploads/${em.pdf}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

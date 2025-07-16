@@ -157,6 +157,17 @@ const PatientRecords = () => {
                           {presc.instructions}
                         </div>
                       )}
+                      {presc.pdf && (
+                        <div className="prescription-section">
+                          <a
+                            href={`/uploads/${presc.pdf}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Download PDF
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </li>
                 ))}

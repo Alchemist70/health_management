@@ -181,7 +181,7 @@ const LabReports = () => {
               {rep.pdf && (
                 <div>
                   <a
-                    href={`/${rep.pdf}`}
+                    href={`/uploads/${rep.pdf}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

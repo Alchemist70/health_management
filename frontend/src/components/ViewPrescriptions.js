@@ -144,17 +144,19 @@ const ViewPrescriptions = () => {
                 )}
               </div>
 
-              <div className="prescription-footer">
-                <button
-                  className="download-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // Implement download functionality
-                  }}
-                >
-                  <i className="fas fa-download"></i> Download
-                </button>
-              </div>
+              {prescription.pdf && (
+                <div className="prescription-footer">
+                  <a
+                    className="download-btn"
+                    href={`/uploads/${prescription.pdf}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <i className="fas fa-download"></i> Download
+                  </a>
+                </div>
+              )}
             </div>
           ))}
         </div>
