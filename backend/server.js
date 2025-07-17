@@ -49,11 +49,18 @@ app.use((req, res, next) => {
   next();
 });
 
-// Ensure upload directory exists
-const uploadDir = path.join(__dirname, "uploads", "doctor_credentials");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Ensure upload directories exist
+const uploadDirs = [
+  path.join(__dirname, "uploads", "lab_reports"),
+  path.join(__dirname, "uploads", "medical_history"),
+  path.join(__dirname, "uploads", "emergency_cases"),
+  path.join(__dirname, "uploads", "doctor_credentials"),
+];
+uploadDirs.forEach((dir) => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
 
 // Serve static files from uploads directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
