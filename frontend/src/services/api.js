@@ -4,9 +4,7 @@ const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // Removed global Content-Type header
 });
 
 // Add request interceptor to include auth token
@@ -43,16 +41,16 @@ export const fetchLabReports = (patientId) =>
   api.get("/api/lab-reports", { params: { patientId } });
 export const addLabReport = (data, isFormData) =>
   isFormData
-    ? api.post("/api/lab-reports", data, {
-        headers: { "Content-Type": undefined },
-      })
-    : api.post("/api/lab-reports", data);
+    ? api.post("/api/lab-reports", data)
+    : api.post("/api/lab-reports", data, {
+        headers: { "Content-Type": "application/json" },
+      });
 export const updateLabReport = (data, isFormData) =>
   isFormData
-    ? api.put("/api/lab-reports", data, {
-        headers: { "Content-Type": undefined },
-      })
-    : api.put("/api/lab-reports", data);
+    ? api.put("/api/lab-reports", data)
+    : api.put("/api/lab-reports", data, {
+        headers: { "Content-Type": "application/json" },
+      });
 export const deleteLabReport = (id) => api.delete(`/api/lab-reports/${id}`);
 
 // Medical History
@@ -60,16 +58,16 @@ export const fetchMedicalHistory = (patientId) =>
   api.get("/api/medical-history", { params: { patientId } });
 export const addMedicalHistory = (data, isFormData) =>
   isFormData
-    ? api.post("/api/medical-history", data, {
-        headers: { "Content-Type": undefined },
-      })
-    : api.post("/api/medical-history", data);
+    ? api.post("/api/medical-history", data)
+    : api.post("/api/medical-history", data, {
+        headers: { "Content-Type": "application/json" },
+      });
 export const updateMedicalHistory = (data, isFormData) =>
   isFormData
-    ? api.put("/api/medical-history", data, {
-        headers: { "Content-Type": undefined },
-      })
-    : api.put("/api/medical-history", data);
+    ? api.put("/api/medical-history", data)
+    : api.put("/api/medical-history", data, {
+        headers: { "Content-Type": "application/json" },
+      });
 export const deleteMedicalHistory = (id) =>
   api.delete(`/api/medical-history/${id}`);
 
@@ -78,16 +76,16 @@ export const fetchEmergencyCases = (patientId) =>
   api.get("/api/emergency-cases", { params: { patientId } });
 export const addEmergencyCase = (data, isFormData) =>
   isFormData
-    ? api.post("/api/emergency-cases", data, {
-        headers: { "Content-Type": undefined },
-      })
-    : api.post("/api/emergency-cases", data);
+    ? api.post("/api/emergency-cases", data)
+    : api.post("/api/emergency-cases", data, {
+        headers: { "Content-Type": "application/json" },
+      });
 export const updateEmergencyCase = (data, isFormData) =>
   isFormData
-    ? api.put("/api/emergency-cases", data, {
-        headers: { "Content-Type": undefined },
-      })
-    : api.put("/api/emergency-cases", data);
+    ? api.put("/api/emergency-cases", data)
+    : api.put("/api/emergency-cases", data, {
+        headers: { "Content-Type": "application/json" },
+      });
 export const deleteEmergencyCase = (id) =>
   api.delete(`/api/emergency-cases/${id}`);
 
