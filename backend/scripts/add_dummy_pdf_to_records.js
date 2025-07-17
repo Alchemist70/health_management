@@ -1,41 +1,36 @@
+// Script to fix pdf paths in MongoDB by removing leading 'uploads/'
+// Run this with: node backend/scripts/add_dummy_pdf_to_records.js
+
 const mongoose = require("mongoose");
-const connectDB = require("../config/database");
-const MedicalHistory = require("../models/medicalHistoryModel");
 const LabReport = require("../models/labReportModel");
+const MedicalHistory = require("../models/medicalHistoryModel");
 const EmergencyCase = require("../models/emergencyCaseModel");
 
-const DUMMY_PDF = "dummy.pdf"; // This should exist in /uploads/ for testing
+const MONGO_URI =
+  "mongodb+srv://Medical_Booking:doKczl3swtXGBWwy@medical-booking.htgmvr6.mongodb.net/?retryWrites=true&w=majority&appName=Medical-Booking";
 
-async function updateRecords() {
-  await connectDB();
-  let updated = 0;
+async function fixPdfPaths() {
+  await mongoose.connect(MONGO_URI);
+  let total = 0;
 
-  // MedicalHistory
-  const mh = await MedicalHistory.updateMany(
-    { $or: [{ pdf: { $exists: false } }, { pdf: null }, { pdf: "" }] },
-    { $set: { pdf: DUMMY_PDF } }
-  );
-  updated += mh.nModified || mh.modifiedCount || 0;
+  // Helper to update a collection
+  async function updateCollection(Model, name) {
+    const res = await Model.updateMany({ pdf: { $regex: "^uploads/" } }, [
+      { $set: { pdf: { $substr: ["$pdf", 8, -1] } } },
+    ]);
+    console.log(`${name}: Updated ${res.modifiedCount} records.`);
+    total += res.modifiedCount;
+  }
 
-  // LabReport
-  const lr = await LabReport.updateMany(
-    { $or: [{ pdf: { $exists: false } }, { pdf: null }, { pdf: "" }] },
-    { $set: { pdf: DUMMY_PDF } }
-  );
-  updated += lr.nModified || lr.modifiedCount || 0;
+  await updateCollection(LabReport, "LabReport");
+  await updateCollection(MedicalHistory, "MedicalHistory");
+  await updateCollection(EmergencyCase, "EmergencyCase");
 
-  // EmergencyCase
-  const ec = await EmergencyCase.updateMany(
-    { $or: [{ pdf: { $exists: false } }, { pdf: null }, { pdf: "" }] },
-    { $set: { pdf: DUMMY_PDF } }
-  );
-  updated += ec.nModified || ec.modifiedCount || 0;
-
-  console.log(`Updated ${updated} records with dummy PDF.`);
-  mongoose.connection.close();
+  console.log(`Total records updated: ${total}`);
+  await mongoose.disconnect();
 }
 
-updateRecords().catch((err) => {
-  console.error("Error updating records:", err);
-  mongoose.connection.close();
+fixPdfPaths().catch((err) => {
+  console.error("Error fixing pdf paths:", err);
+  process.exit(1);
 });

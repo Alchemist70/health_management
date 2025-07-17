@@ -1,6 +1,7 @@
 const EmergencyCase = require("../models/emergencyCaseModel");
 const path = require("path"); // Add at the top if not present
 
+// Always store only the subdirectory and filename for pdf, not the full path (e.g. 'emergency_cases/filename.pdf')
 // Get emergency cases
 const getEmergencyCases = async (req, res) => {
   try {
@@ -37,9 +38,9 @@ const addEmergencyCase = async (req, res) => {
     if (req.file) {
       // Always store the subdirectory and filename, e.g. 'emergency_cases/filename.pdf'
       const relPath = path
-        .relative(path.join(__dirname, "../uploads"), req.file.path)
+        .relative(path.join(__dirname, "../"), req.file.path)
         .replace(/\\/g, "/");
-      pdf = relPath;
+      pdf = relPath.replace(/^uploads\//, "");
     }
     const emergencyCase = await EmergencyCase.create({
       patient_id,
@@ -65,9 +66,9 @@ const updateEmergencyCase = async (req, res) => {
     if (req.file) {
       // Always store the subdirectory and filename, e.g. 'emergency_cases/filename.pdf'
       const relPath = path
-        .relative(path.join(__dirname, "../uploads"), req.file.path)
+        .relative(path.join(__dirname, "../"), req.file.path)
         .replace(/\\/g, "/");
-      updateFields.pdf = relPath;
+      updateFields.pdf = relPath.replace(/^uploads\//, "");
     }
     const emergencyCase = await EmergencyCase.findByIdAndUpdate(
       id,

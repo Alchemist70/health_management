@@ -1,3 +1,4 @@
+// Always store only the subdirectory and filename for pdf, not the full path (e.g. 'medical_history/filename.pdf')
 const MedicalHistory = require("../models/medicalHistoryModel");
 const path = require("path"); // Add at the top if not present
 
@@ -37,9 +38,9 @@ const addMedicalHistory = async (req, res) => {
     if (req.file) {
       // Always store the subdirectory and filename, e.g. 'medical_history/filename.pdf'
       const relPath = path
-        .relative(path.join(__dirname, "../uploads"), req.file.path)
+        .relative(path.join(__dirname, "../"), req.file.path)
         .replace(/\\/g, "/");
-      pdf = relPath;
+      pdf = relPath.replace(/^uploads\//, "");
     }
     const medicalHistory = await MedicalHistory.create({
       patient_id,
@@ -65,9 +66,9 @@ const updateMedicalHistory = async (req, res) => {
     if (req.file) {
       // Always store the subdirectory and filename, e.g. 'medical_history/filename.pdf'
       const relPath = path
-        .relative(path.join(__dirname, "../uploads"), req.file.path)
+        .relative(path.join(__dirname, "../"), req.file.path)
         .replace(/\\/g, "/");
-      updateFields.pdf = relPath;
+      updateFields.pdf = relPath.replace(/^uploads\//, "");
     }
     const medicalHistory = await MedicalHistory.findByIdAndUpdate(
       id,
