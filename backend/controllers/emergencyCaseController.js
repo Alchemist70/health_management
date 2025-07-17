@@ -35,11 +35,11 @@ const addEmergencyCase = async (req, res) => {
     const doctor_id = req.user.id;
     let pdf = null;
     if (req.file) {
-      // Only store the subdirectory and filename, not the full path
+      // Always store the subdirectory and filename, e.g. 'emergency_cases/filename.pdf'
       const relPath = path
-        .relative(path.join(__dirname, "../"), req.file.path)
+        .relative(path.join(__dirname, "../uploads"), req.file.path)
         .replace(/\\/g, "/");
-      pdf = relPath.replace(/^uploads\//, "");
+      pdf = relPath;
     }
     const emergencyCase = await EmergencyCase.create({
       patient_id,
@@ -63,11 +63,11 @@ const updateEmergencyCase = async (req, res) => {
     const { id, case_description, case_date } = req.body;
     let updateFields = { case_description, case_date };
     if (req.file) {
-      // Only store the subdirectory and filename, not the full path
+      // Always store the subdirectory and filename, e.g. 'emergency_cases/filename.pdf'
       const relPath = path
-        .relative(path.join(__dirname, "../"), req.file.path)
+        .relative(path.join(__dirname, "../uploads"), req.file.path)
         .replace(/\\/g, "/");
-      updateFields.pdf = relPath.replace(/^uploads\//, "");
+      updateFields.pdf = relPath;
     }
     const emergencyCase = await EmergencyCase.findByIdAndUpdate(
       id,

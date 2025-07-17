@@ -35,11 +35,11 @@ const addMedicalHistory = async (req, res) => {
     const doctor_id = req.user.id;
     let pdf = null;
     if (req.file) {
-      // Only store the subdirectory and filename, not the full path
+      // Always store the subdirectory and filename, e.g. 'medical_history/filename.pdf'
       const relPath = path
-        .relative(path.join(__dirname, "../"), req.file.path)
+        .relative(path.join(__dirname, "../uploads"), req.file.path)
         .replace(/\\/g, "/");
-      pdf = relPath.replace(/^uploads\//, "");
+      pdf = relPath;
     }
     const medicalHistory = await MedicalHistory.create({
       patient_id,
@@ -63,11 +63,11 @@ const updateMedicalHistory = async (req, res) => {
     const { id, history, history_date } = req.body;
     let updateFields = { history, history_date };
     if (req.file) {
-      // Only store the subdirectory and filename, not the full path
+      // Always store the subdirectory and filename, e.g. 'medical_history/filename.pdf'
       const relPath = path
-        .relative(path.join(__dirname, "../"), req.file.path)
+        .relative(path.join(__dirname, "../uploads"), req.file.path)
         .replace(/\\/g, "/");
-      updateFields.pdf = relPath.replace(/^uploads\//, "");
+      updateFields.pdf = relPath;
     }
     const medicalHistory = await MedicalHistory.findByIdAndUpdate(
       id,
