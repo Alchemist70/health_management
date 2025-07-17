@@ -54,17 +54,18 @@ const addEmergencyCase = async (req, res) => {
 const updateEmergencyCase = async (req, res) => {
   try {
     const { id, case_description, case_date } = req.body;
-
+    let updateFields = { case_description, case_date };
+    if (req.file) {
+      updateFields.pdf = req.file.path.replace("backend/", "");
+    }
     const emergencyCase = await EmergencyCase.findByIdAndUpdate(
       id,
-      { case_description, case_date },
+      updateFields,
       { new: true }
     );
-
     if (!emergencyCase) {
       return res.status(404).json({ message: "Emergency case not found" });
     }
-
     res.json(emergencyCase);
   } catch (err) {
     console.error("Error updating emergency case:", err);

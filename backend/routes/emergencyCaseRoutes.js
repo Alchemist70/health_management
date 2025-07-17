@@ -11,7 +11,12 @@ router.post(
   uploadEmergencyCase.single("pdf"),
   emergencyCaseController.addEmergencyCase
 );
-router.put("/", authenticateToken, emergencyCaseController.updateEmergencyCase);
+router.put(
+  "/",
+  authenticateToken,
+  uploadEmergencyCase.single("pdf"),
+  emergencyCaseController.updateEmergencyCase
+);
 router.delete(
   "/:id",
   authenticateToken,

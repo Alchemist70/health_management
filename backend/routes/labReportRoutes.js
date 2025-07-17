@@ -11,7 +11,12 @@ router.post(
   uploadLabReport.single("pdf"),
   labReportController.addLabReport
 );
-router.put("/", authenticateToken, labReportController.updateLabReport);
+router.put(
+  "/",
+  authenticateToken,
+  uploadLabReport.single("pdf"),
+  labReportController.updateLabReport
+);
 router.delete("/:id", authenticateToken, labReportController.deleteLabReport);
 
 module.exports = router;

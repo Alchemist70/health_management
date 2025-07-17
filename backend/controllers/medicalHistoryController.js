@@ -54,17 +54,18 @@ const addMedicalHistory = async (req, res) => {
 const updateMedicalHistory = async (req, res) => {
   try {
     const { id, history, history_date } = req.body;
-
+    let updateFields = { history, history_date };
+    if (req.file) {
+      updateFields.pdf = req.file.path.replace("backend/", "");
+    }
     const medicalHistory = await MedicalHistory.findByIdAndUpdate(
       id,
-      { history, history_date },
+      updateFields,
       { new: true }
     );
-
     if (!medicalHistory) {
       return res.status(404).json({ message: "Medical history not found" });
     }
-
     res.json(medicalHistory);
   } catch (err) {
     console.error("Error updating medical history:", err);

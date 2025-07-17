@@ -14,6 +14,7 @@ router.post(
 router.put(
   "/",
   authenticateToken,
+  uploadMedicalHistory.single("pdf"),
   medicalHistoryController.updateMedicalHistory
 );
 router.delete(

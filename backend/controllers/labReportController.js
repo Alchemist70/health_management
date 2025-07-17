@@ -54,17 +54,16 @@ const addLabReport = async (req, res) => {
 const updateLabReport = async (req, res) => {
   try {
     const { id, report, report_date } = req.body;
-
-    const labReport = await LabReport.findByIdAndUpdate(
-      id,
-      { report, report_date },
-      { new: true }
-    );
-
+    let updateFields = { report, report_date };
+    if (req.file) {
+      updateFields.pdf = req.file.path.replace("backend/", "");
+    }
+    const labReport = await LabReport.findByIdAndUpdate(id, updateFields, {
+      new: true,
+    });
     if (!labReport) {
       return res.status(404).json({ message: "Lab report not found" });
     }
-
     res.json(labReport);
   } catch (err) {
     console.error("Error updating lab report:", err);
