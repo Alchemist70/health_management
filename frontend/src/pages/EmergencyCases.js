@@ -94,7 +94,7 @@ const EmergencyCases = () => {
 
   const handleEdit = (em) => {
     setForm({
-      id: em.id,
+      id: em._id,
       case_description: em.case_description,
       case_date: em.case_date,
     });
@@ -192,7 +192,7 @@ const EmergencyCases = () => {
       ) : (
         <ul className="section-list">
           {cases.map((em) => (
-            <li key={em.id}>
+            <li key={em._id}>
               <strong>{em.case_description}</strong>
               <span className="meta">{em.case_date}</span>
               {em.pdf && (
@@ -216,7 +216,7 @@ const EmergencyCases = () => {
                 </button>
                 <button
                   className="action-button cancel"
-                  onClick={() => handleDelete(em.id)}
+                  onClick={() => handleDelete(em._id)}
                 >
                   Delete
                 </button>

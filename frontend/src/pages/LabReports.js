@@ -83,7 +83,7 @@ const LabReports = () => {
   };
 
   const handleEdit = (rep) => {
-    setForm({ id: rep.id, report: rep.report, report_date: rep.report_date });
+    setForm({ id: rep._id, report: rep.report, report_date: rep.report_date });
     setEditing(true);
     setModalOpen(true);
   };
@@ -176,7 +176,7 @@ const LabReports = () => {
       ) : (
         <ul className="section-list">
           {reports.map((rep) => (
-            <li key={rep.id}>
+            <li key={rep._id}>
               <strong>{rep.report}</strong>
               <span className="meta">{rep.report_date}</span>
               {rep.pdf && (
@@ -200,7 +200,7 @@ const LabReports = () => {
                 </button>
                 <button
                   className="action-button cancel"
-                  onClick={() => handleDelete(rep.id)}
+                  onClick={() => handleDelete(rep._id)}
                 >
                   Delete
                 </button>

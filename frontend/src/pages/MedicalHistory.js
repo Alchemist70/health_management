@@ -99,7 +99,7 @@ const MedicalHistory = () => {
 
   const handleEdit = (rec) => {
     setForm({
-      id: rec.id,
+      id: rec._id,
       history: rec.history,
       history_date: rec.history_date,
     });
@@ -202,7 +202,7 @@ const MedicalHistory = () => {
       ) : (
         <ul className="section-list">
           {history.map((rec) => (
-            <li key={rec.id}>
+            <li key={rec._id}>
               <strong>{rec.history}</strong>
               <span className="meta">{rec.history_date}</span>
               {rec.pdf && (
@@ -227,7 +227,7 @@ const MedicalHistory = () => {
                   </button>
                   <button
                     className="action-button cancel"
-                    onClick={() => handleDelete(rec.id)}
+                    onClick={() => handleDelete(rec._id)}
                   >
                     Delete
                   </button>
