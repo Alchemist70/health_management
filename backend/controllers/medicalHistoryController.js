@@ -28,6 +28,8 @@ const getMedicalHistory = async (req, res) => {
 // Add medical history
 const addMedicalHistory = async (req, res) => {
   try {
+    console.log("addMedicalHistory req.body:", req.body);
+    console.log("addMedicalHistory req.file:", req.file);
     const { patient_id, history, history_date } = req.body;
     const doctor_id = req.user.id;
     let pdf = null;
@@ -53,6 +55,8 @@ const addMedicalHistory = async (req, res) => {
 // Update medical history
 const updateMedicalHistory = async (req, res) => {
   try {
+    console.log("updateMedicalHistory req.body:", req.body);
+    console.log("updateMedicalHistory req.file:", req.file);
     const { id, history, history_date } = req.body;
     let updateFields = { history, history_date };
     if (req.file) {
@@ -76,6 +80,7 @@ const updateMedicalHistory = async (req, res) => {
 // Delete medical history
 const deleteMedicalHistory = async (req, res) => {
   try {
+    console.log("deleteMedicalHistory req.params:", req.params);
     const { id } = req.params;
 
     const medicalHistory = await MedicalHistory.findByIdAndDelete(id);

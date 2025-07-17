@@ -28,6 +28,8 @@ const getLabReports = async (req, res) => {
 // Add lab report
 const addLabReport = async (req, res) => {
   try {
+    console.log("addLabReport req.body:", req.body);
+    console.log("addLabReport req.file:", req.file);
     const { patient_id, report, report_date } = req.body;
     const doctor_id = req.user.id;
     let pdf = null;
@@ -53,6 +55,8 @@ const addLabReport = async (req, res) => {
 // Update lab report
 const updateLabReport = async (req, res) => {
   try {
+    console.log("updateLabReport req.body:", req.body);
+    console.log("updateLabReport req.file:", req.file);
     const { id, report, report_date } = req.body;
     let updateFields = { report, report_date };
     if (req.file) {
@@ -74,6 +78,7 @@ const updateLabReport = async (req, res) => {
 // Delete lab report
 const deleteLabReport = async (req, res) => {
   try {
+    console.log("deleteLabReport req.params:", req.params);
     const { id } = req.params;
 
     const labReport = await LabReport.findByIdAndDelete(id);

@@ -28,6 +28,8 @@ const getEmergencyCases = async (req, res) => {
 // Add emergency case
 const addEmergencyCase = async (req, res) => {
   try {
+    console.log("addEmergencyCase req.body:", req.body);
+    console.log("addEmergencyCase req.file:", req.file);
     const { patient_id, case_description, case_date } = req.body;
     const doctor_id = req.user.id;
     let pdf = null;
@@ -53,6 +55,8 @@ const addEmergencyCase = async (req, res) => {
 // Update emergency case
 const updateEmergencyCase = async (req, res) => {
   try {
+    console.log("updateEmergencyCase req.body:", req.body);
+    console.log("updateEmergencyCase req.file:", req.file);
     const { id, case_description, case_date } = req.body;
     let updateFields = { case_description, case_date };
     if (req.file) {
@@ -76,6 +80,7 @@ const updateEmergencyCase = async (req, res) => {
 // Delete emergency case
 const deleteEmergencyCase = async (req, res) => {
   try {
+    console.log("deleteEmergencyCase req.params:", req.params);
     const { id } = req.params;
 
     const emergencyCase = await EmergencyCase.findByIdAndDelete(id);
