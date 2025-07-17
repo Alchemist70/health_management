@@ -41,27 +41,53 @@ export const fetchPatients = () => api.get("/api/patients");
 // Lab Reports
 export const fetchLabReports = (patientId) =>
   api.get("/api/lab-reports", { params: { patientId } });
-export const addLabReport = (data) => api.post("/api/lab-reports", data);
-export const updateLabReport = (data) => api.put("/api/lab-reports", data);
+export const addLabReport = (data, isFormData) =>
+  isFormData
+    ? api.post("/api/lab-reports", data, {
+        headers: { "Content-Type": undefined },
+      })
+    : api.post("/api/lab-reports", data);
+export const updateLabReport = (data, isFormData) =>
+  isFormData
+    ? api.put("/api/lab-reports", data, {
+        headers: { "Content-Type": undefined },
+      })
+    : api.put("/api/lab-reports", data);
 export const deleteLabReport = (id) => api.delete(`/api/lab-reports/${id}`);
 
 // Medical History
 export const fetchMedicalHistory = (patientId) =>
   api.get("/api/medical-history", { params: { patientId } });
-export const addMedicalHistory = (data) =>
-  api.post("/api/medical-history", data);
-export const updateMedicalHistory = (data) =>
-  api.put("/api/medical-history", data);
+export const addMedicalHistory = (data, isFormData) =>
+  isFormData
+    ? api.post("/api/medical-history", data, {
+        headers: { "Content-Type": undefined },
+      })
+    : api.post("/api/medical-history", data);
+export const updateMedicalHistory = (data, isFormData) =>
+  isFormData
+    ? api.put("/api/medical-history", data, {
+        headers: { "Content-Type": undefined },
+      })
+    : api.put("/api/medical-history", data);
 export const deleteMedicalHistory = (id) =>
   api.delete(`/api/medical-history/${id}`);
 
 // Emergency Cases
 export const fetchEmergencyCases = (patientId) =>
   api.get("/api/emergency-cases", { params: { patientId } });
-export const addEmergencyCase = (data) =>
-  api.post("/api/emergency-cases", data);
-export const updateEmergencyCase = (data) =>
-  api.put("/api/emergency-cases", data);
+export const addEmergencyCase = (data, isFormData) =>
+  isFormData
+    ? api.post("/api/emergency-cases", data, {
+        headers: { "Content-Type": undefined },
+      })
+    : api.post("/api/emergency-cases", data);
+export const updateEmergencyCase = (data, isFormData) =>
+  isFormData
+    ? api.put("/api/emergency-cases", data, {
+        headers: { "Content-Type": undefined },
+      })
+    : api.put("/api/emergency-cases", data);
 export const deleteEmergencyCase = (id) =>
   api.delete(`/api/emergency-cases/${id}`);
 
