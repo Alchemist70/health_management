@@ -1,4 +1,5 @@
 const MedicalHistory = require("../models/medicalHistoryModel");
+const path = require("path"); // Add at the top if not present
 
 // Get medical history
 const getMedicalHistory = async (req, res) => {
@@ -34,9 +35,12 @@ const addMedicalHistory = async (req, res) => {
     const doctor_id = req.user.id;
     let pdf = null;
     if (req.file) {
-      pdf = req.file.path.replace("backend/", ""); // Store relative path
+      // Only store the subdirectory and filename, not the full path
+      const relPath = path
+        .relative(path.join(__dirname, "../"), req.file.path)
+        .replace(/\\/g, "/");
+      pdf = relPath.replace(/^uploads\//, "");
     }
-
     const medicalHistory = await MedicalHistory.create({
       patient_id,
       doctor_id,
@@ -44,7 +48,6 @@ const addMedicalHistory = async (req, res) => {
       history_date: history_date || new Date(),
       pdf,
     });
-
     res.status(201).json(medicalHistory);
   } catch (err) {
     console.error("Error adding medical history:", err);
@@ -60,7 +63,11 @@ const updateMedicalHistory = async (req, res) => {
     const { id, history, history_date } = req.body;
     let updateFields = { history, history_date };
     if (req.file) {
-      updateFields.pdf = req.file.path.replace("backend/", "");
+      // Only store the subdirectory and filename, not the full path
+      const relPath = path
+        .relative(path.join(__dirname, "../"), req.file.path)
+        .replace(/\\/g, "/");
+      updateFields.pdf = relPath.replace(/^uploads\//, "");
     }
     const medicalHistory = await MedicalHistory.findByIdAndUpdate(
       id,

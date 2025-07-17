@@ -1,4 +1,5 @@
 const LabReport = require("../models/labReportModel");
+const path = require("path"); // Added for path.relative
 
 // Get lab reports
 const getLabReports = async (req, res) => {
@@ -34,9 +35,12 @@ const addLabReport = async (req, res) => {
     const doctor_id = req.user.id;
     let pdf = null;
     if (req.file) {
-      pdf = req.file.path.replace("backend/", ""); // Store relative path
+      // Only store the subdirectory and filename, not the full path
+      const relPath = path
+        .relative(path.join(__dirname, "../"), req.file.path)
+        .replace(/\\/g, "/");
+      pdf = relPath.replace(/^uploads\//, "");
     }
-
     const labReport = await LabReport.create({
       patient_id,
       doctor_id,
@@ -44,7 +48,6 @@ const addLabReport = async (req, res) => {
       report_date: report_date || new Date(),
       pdf,
     });
-
     res.status(201).json(labReport);
   } catch (err) {
     console.error("Error adding lab report:", err);
@@ -60,7 +63,11 @@ const updateLabReport = async (req, res) => {
     const { id, report, report_date } = req.body;
     let updateFields = { report, report_date };
     if (req.file) {
-      updateFields.pdf = req.file.path.replace("backend/", "");
+      // Only store the subdirectory and filename, not the full path
+      const relPath = path
+        .relative(path.join(__dirname, "../"), req.file.path)
+        .replace(/\\/g, "/");
+      updateFields.pdf = relPath.replace(/^uploads\//, "");
     }
     const labReport = await LabReport.findByIdAndUpdate(id, updateFields, {
       new: true,

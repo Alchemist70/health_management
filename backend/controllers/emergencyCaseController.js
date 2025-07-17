@@ -1,4 +1,5 @@
 const EmergencyCase = require("../models/emergencyCaseModel");
+const path = require("path"); // Add at the top if not present
 
 // Get emergency cases
 const getEmergencyCases = async (req, res) => {
@@ -34,9 +35,12 @@ const addEmergencyCase = async (req, res) => {
     const doctor_id = req.user.id;
     let pdf = null;
     if (req.file) {
-      pdf = req.file.path.replace("backend/", ""); // Store relative path
+      // Only store the subdirectory and filename, not the full path
+      const relPath = path
+        .relative(path.join(__dirname, "../"), req.file.path)
+        .replace(/\\/g, "/");
+      pdf = relPath.replace(/^uploads\//, "");
     }
-
     const emergencyCase = await EmergencyCase.create({
       patient_id,
       doctor_id,
@@ -44,7 +48,6 @@ const addEmergencyCase = async (req, res) => {
       case_date: case_date || new Date(),
       pdf,
     });
-
     res.status(201).json(emergencyCase);
   } catch (err) {
     console.error("Error adding emergency case:", err);
@@ -60,7 +63,11 @@ const updateEmergencyCase = async (req, res) => {
     const { id, case_description, case_date } = req.body;
     let updateFields = { case_description, case_date };
     if (req.file) {
-      updateFields.pdf = req.file.path.replace("backend/", "");
+      // Only store the subdirectory and filename, not the full path
+      const relPath = path
+        .relative(path.join(__dirname, "../"), req.file.path)
+        .replace(/\\/g, "/");
+      updateFields.pdf = relPath.replace(/^uploads\//, "");
     }
     const emergencyCase = await EmergencyCase.findByIdAndUpdate(
       id,
