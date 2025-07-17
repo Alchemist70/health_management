@@ -179,7 +179,8 @@ const LabReports = () => {
             <li key={rep._id}>
               <strong>{rep.report}</strong>
               <span className="meta">{rep.report_date}</span>
-              {rep.pdf && (
+              {console.log("LabReport PDF:", rep.pdf)}
+              {rep.pdf ? (
                 <div>
                   <a
                     href={`/uploads/${rep.pdf}`}
@@ -188,6 +189,10 @@ const LabReports = () => {
                   >
                     View PDF
                   </a>
+                </div>
+              ) : (
+                <div style={{ color: "orange" }}>
+                  No PDF uploaded for this report.
                 </div>
               )}
               <div style={{ marginTop: 8 }}>

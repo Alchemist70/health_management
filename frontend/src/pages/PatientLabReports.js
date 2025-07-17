@@ -41,7 +41,8 @@ const PatientLabReports = () => {
               {rep.doctor_id && rep.doctor_name && (
                 <span className="meta">Written by Dr. {rep.doctor_name}</span>
               )}
-              {rep.pdf && (
+              {console.log("PatientLabReport PDF:", rep.pdf)}
+              {rep.pdf ? (
                 <div>
                   <a
                     href={`/uploads/${rep.pdf}`}
@@ -50,6 +51,10 @@ const PatientLabReports = () => {
                   >
                     Download PDF
                   </a>
+                </div>
+              ) : (
+                <div style={{ color: "orange" }}>
+                  No PDF uploaded for this report.
                 </div>
               )}
             </li>

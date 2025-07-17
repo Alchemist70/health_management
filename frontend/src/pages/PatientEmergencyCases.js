@@ -41,7 +41,8 @@ const PatientEmergencyCases = () => {
               {em.doctor_id && em.doctor_name && (
                 <span className="meta">Written by Dr. {em.doctor_name}</span>
               )}
-              {em.pdf && (
+              {console.log("PatientEmergencyCase PDF:", em.pdf)}
+              {em.pdf ? (
                 <div>
                   <a
                     href={`/uploads/${em.pdf}`}
@@ -50,6 +51,10 @@ const PatientEmergencyCases = () => {
                   >
                     Download PDF
                   </a>
+                </div>
+              ) : (
+                <div style={{ color: "orange" }}>
+                  No PDF uploaded for this case.
                 </div>
               )}
             </li>

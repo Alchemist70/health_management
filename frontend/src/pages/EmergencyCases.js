@@ -195,7 +195,8 @@ const EmergencyCases = () => {
             <li key={em._id}>
               <strong>{em.case_description}</strong>
               <span className="meta">{em.case_date}</span>
-              {em.pdf && (
+              {console.log("EmergencyCase PDF:", em.pdf)}
+              {em.pdf ? (
                 <div>
                   <a
                     href={`/uploads/${em.pdf}`}
@@ -204,6 +205,10 @@ const EmergencyCases = () => {
                   >
                     View PDF
                   </a>
+                </div>
+              ) : (
+                <div style={{ color: "orange" }}>
+                  No PDF uploaded for this case.
                 </div>
               )}
               <div style={{ marginTop: 8 }}>

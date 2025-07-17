@@ -205,7 +205,8 @@ const MedicalHistory = () => {
             <li key={rec._id}>
               <strong>{rec.history}</strong>
               <span className="meta">{rec.history_date}</span>
-              {rec.pdf && (
+              {console.log("MedicalHistory PDF:", rec.pdf)}
+              {rec.pdf ? (
                 <div>
                   <a
                     href={`/uploads/${rec.pdf}`}
@@ -214,6 +215,10 @@ const MedicalHistory = () => {
                   >
                     View PDF
                   </a>
+                </div>
+              ) : (
+                <div style={{ color: "orange" }}>
+                  No PDF uploaded for this record.
                 </div>
               )}
               {userRole !== "patient" && (
