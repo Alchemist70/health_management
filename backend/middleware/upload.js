@@ -3,7 +3,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "backend/uploads/lab_reports/");
+    cb(null, "uploads/lab_reports/"); // Fixed path
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -22,7 +22,7 @@ const uploadLabReport = multer({ storage, fileFilter });
 
 const storageMedicalHistory = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "backend/uploads/medical_history/");
+    cb(null, "uploads/medical_history/"); // Fixed path
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -36,7 +36,7 @@ const uploadMedicalHistory = multer({
 
 const storageEmergencyCase = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "backend/uploads/emergency_cases/");
+    cb(null, "uploads/emergency_cases/"); // Fixed path
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
