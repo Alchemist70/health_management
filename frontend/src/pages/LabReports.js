@@ -32,6 +32,7 @@ const LabReports = () => {
     setLoading(true);
     try {
       const res = await fetchLabReports(pid);
+      console.log("Fetched lab reports:", res.data); // Debug log
       setReports(res.data);
     } catch (err) {
       setError("Failed to fetch lab reports");

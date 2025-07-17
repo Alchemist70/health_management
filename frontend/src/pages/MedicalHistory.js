@@ -40,6 +40,7 @@ const MedicalHistory = () => {
     setLoading(true);
     try {
       const res = await fetchMedicalHistory(pid);
+      console.log("Fetched medical history:", res.data); // Debug log
       setHistory(res.data);
     } catch (err) {
       setError("Failed to fetch medical history");

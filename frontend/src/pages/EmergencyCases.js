@@ -36,6 +36,7 @@ const EmergencyCases = () => {
     setLoading(true);
     try {
       const res = await fetchEmergencyCases(pid);
+      console.log("Fetched emergency cases:", res.data); // Debug log
       setCases(res.data);
     } catch (err) {
       setError("Failed to fetch emergency cases");

@@ -17,7 +17,7 @@ const getLabReports = async (req, res) => {
       .populate("patient_id", "name email")
       .populate("doctor_id", "name email")
       .sort({ report_date: -1 });
-
+    console.log("Sending lab reports:", labReports); // Debug log
     res.json(labReports);
   } catch (err) {
     console.error("Error fetching lab reports:", err);

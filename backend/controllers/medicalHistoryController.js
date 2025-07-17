@@ -17,7 +17,7 @@ const getMedicalHistory = async (req, res) => {
       .populate("patient_id", "name email")
       .populate("doctor_id", "name email")
       .sort({ history_date: -1 });
-
+    console.log("Sending medical history:", medicalHistory); // Debug log
     res.json(medicalHistory);
   } catch (err) {
     console.error("Error fetching medical history:", err);

@@ -17,7 +17,7 @@ const getEmergencyCases = async (req, res) => {
       .populate("patient_id", "name email")
       .populate("doctor_id", "name email")
       .sort({ case_date: -1 });
-
+    console.log("Sending emergency cases:", emergencyCases); // Debug log
     res.json(emergencyCases);
   } catch (err) {
     console.error("Error fetching emergency cases:", err);
