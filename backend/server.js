@@ -49,7 +49,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Ensure upload directories exist
+// Ensure parent uploads directory exists
+const parentUploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(parentUploadDir)) {
+  fs.mkdirSync(parentUploadDir, { recursive: true });
+  console.log("Created parent uploads directory:", parentUploadDir);
+}
+// Ensure upload subdirectories exist
 const uploadDirs = [
   path.join(__dirname, "uploads", "lab_reports"),
   path.join(__dirname, "uploads", "medical_history"),
@@ -59,6 +65,7 @@ const uploadDirs = [
 uploadDirs.forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
+    console.log("Created upload subdirectory:", dir);
   }
 });
 
